@@ -6,7 +6,8 @@ from datetime import datetime
 import sys
 import textwrap
 
-class C_AST:
+# Base class for AST classes for other programming languages
+class AST:
     def __init__(self, parent=None, name=None, pos=None, kind=None):
         self.parent = parent
         self.name = name
@@ -40,6 +41,14 @@ class C_AST:
         for child in self.children:
             lst += child.preorder()
         return lst
+    
+    @classmethod
+    def create(cls, node, parent=None):
+        NotImplemented
+
+class C_AST(AST):
+    def __init__(self, parent=None, name=None, pos=None, kind=None):
+        AST.__init__(self, parent, name, pos, kind)
     
     @classmethod
     def create(cls, node, parent=None):
@@ -101,97 +110,101 @@ class Checker:
 
         self.similarity = num_of_same_nodes / len(arrLL)
 
-parser = argparse.ArgumentParser(
-    formatter_class=argparse.RawDescriptionHelpFormatter,
-    description="Anubis Plagiarism Detector",
-    epilog=textwrap.dedent('''
-    Explain:
-        The script will find all code under the path:
-            <DIR>/<any dirname>/<SUBPATH>
+def main():
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description="Anubis AntiCheat",
+        epilog=textwrap.dedent('''
+        Explain:
+            The script will find all code under the path:
+                <DIR>/<any dirname>/<SUBPATH>
 
-        For example, `python3 anubis_pd.py -d /home/homework -p dir1/prog.c` will match:
-            /home/homework/<any dirname>/dir1/prog.c
-    ''')
-)
-parser.add_argument(
-    '-d',
-    dest="dir",
-    help="The main directory storing the code",
-    required=True,
-)
-parser.add_argument(
-    '-p',
-    dest="subpath",
-    help="The path relative to the directories under the main directory to the code itself",
-    required=True,
-)
-parser.add_argument(
-    '--threshold',
-    type=int,
-    default=5,
-    help="The threshold value controlling the granularity of the matching. Default 5",
-)
-parser.add_argument(
-    '--libclang',
-    dest="libclang_path",
-    help="The path to libclang, a C API used for analyzing the AST of C code"
-)
+            For example, `python3 anubis_pd.py -d /home/homework -p dir1/prog.c` will match:
+                /home/homework/<any dirname>/dir1/prog.c
+        ''')
+    )
+    parser.add_argument(
+        '-d',
+        dest="dir",
+        help="The main directory storing the code",
+        required=True,
+    )
+    parser.add_argument(
+        '-p',
+        dest="subpath",
+        help="The path relative to the directories under the main directory to the code itself",
+        required=True,
+    )
+    parser.add_argument(
+        '--threshold',
+        type=int,
+        default=5,
+        help="The threshold value controlling the granularity of the matching. Default 5",
+    )
+    parser.add_argument(
+        '--libclang',
+        dest="libclang_path",
+        help="The path to libclang, a C API used for analyzing the AST of C code"
+    )
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-# /Library/Developer/CommandLineTools/usr/lib
-if args.libclang_path is not None:
-    clang.cindex.Config.set_library_path(args.libclang_path)
-    index = clang.cindex.Index.create()
-else:
-    try:
+    # /Library/Developer/CommandLineTools/usr/lib
+    if args.libclang_path is not None:
+        clang.cindex.Config.set_library_path(args.libclang_path)
         index = clang.cindex.Index.create()
-    except clang.cindex.LibclangError:
-        print("Cannot find libclang. Please specify its path using --libclang argument")
-        sys.exit()
+    else:
+        try:
+            index = clang.cindex.Index.create()
+        except clang.cindex.LibclangError:
+            print("Cannot find libclang. Please specify its path using --libclang argument")
+            sys.exit()
 
-print(datetime.now())
-print(' '.join(sys.argv))
-print()
+    print(datetime.now())
+    print(' '.join(sys.argv))
+    print()
 
-start_time = datetime.now()
+    start_time = datetime.now()
 
-asts = {}
-for dirname in os.listdir(args.dir):
-    path = f"{args.dir}/{dirname}/{args.subpath}"
-    if (not os.path.exists(path)):
-        print(f"{args.dir}/{dirname} doesn't have uniq.c")
-        continue
+    asts = {}
+    for dirname in os.listdir(args.dir):
+        path = f"{args.dir}/{dirname}/{args.subpath}"
+        if (not os.path.exists(path)):
+            print(f"{args.dir}/{dirname} doesn't have {args.subpath}")
+            continue
 
-    prog = index.parse(path)
-    c_ast = C_AST.create(prog.cursor)
-    c_ast.hash()
-    asts[path] = c_ast
+        prog = index.parse(path)
+        c_ast = C_AST.create(prog.cursor)
+        c_ast.hash()
+        asts[path] = c_ast
 
-keys = list(asts.keys())
-results = []
-for i in range(len(keys)):
-    for j in range(i+1, len(keys)):
-        path1 = keys[i]
-        path2 = keys[j]
-        checker = Checker(
-            path1,
-            path2,
-            asts[path1].preorder(),
-            asts[path2].preorder(),
-            threshold=args.threshold
-        )
+    keys = list(asts.keys())
+    results = []
+    for i in range(len(keys)):
+        for j in range(i+1, len(keys)):
+            path1 = keys[i]
+            path2 = keys[j]
+            checker = Checker(
+                path1,
+                path2,
+                asts[path1].preorder(),
+                asts[path2].preorder(),
+                threshold=args.threshold
+            )
 
-        checker.check()
+            checker.check()
 
-        results.append(checker)
+            results.append(checker)
 
-end_time = datetime.now()
+    end_time = datetime.now()
 
-print()
-print(f"Duration: {(end_time-start_time).seconds}s")
-print()
+    print()
+    print(f"Duration: {(end_time-start_time).seconds}s")
+    print()
 
-results.sort(key=lambda x: -x.similarity)
-for r in results:
-    print(f"{r.path1} - {r.path2}:\t{r.similarity:%}")
+    results.sort(key=lambda x: -x.similarity)
+    for r in results:
+        print(f"{r.path1} - {r.path2}:\t{r.similarity:%}")
+
+if (__name__ == "__main__"):
+    main()
