@@ -17,5 +17,4 @@ Additionally you can pass two more optional arguments for `anubis_pd.py`:
 - `--libclang`: Specify the path to `libclang`, which is a C API used for analyzing the AST of C code. If `anubis_pd.py` cannot automatically find `libclang` you need to explicitly pass its path.
 
 ## Limitations
-- This tool currently only works for C but that will soon be addressed [#1](https://github.com/AnubisLMS/AntiCheat/issues/1)
-- This tool will never work for assembly code as the code has to be written in a high level programming language that can be converted into an AST. We can potentially figure out a way to automatically reverse engineer assembly code back to C and then convert it to AST. However, there's no guarantee that the reverse-engineered code can be a good representation for its assembly counterpart.
+This tool will never work for assembly code as the code has to be written in a high level programming language that can be converted into an AST. We can potentially figure out a way to automatically reverse engineer assembly code back to C and then convert it to AST. However, there's no guarantee that the reverse-engineered code can be a good representation for its assembly counterpart.
