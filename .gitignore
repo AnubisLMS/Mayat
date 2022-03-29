@@ -1,0 +1,7 @@
+.idea
+.vscode
+anubis*.egg-info
+venv
+build
+dist
+

@@ -1,0 +1,9 @@
+include README.md
+include keys/pub/*.pub
+include etc/*.yml
+
+recursive-include tests *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+
+recursive-include docs *.md conf.py Makefile make.bat *.jpg *.png *.gif

@@ -1,0 +1,5 @@
+clang
+pytest
+black
+coverage
+
