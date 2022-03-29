@@ -1,4 +1,9 @@
+LINT_DIRECTORIES := \
+	anubis_pd \
+	tests
+
 COMMIT := $(shell git rev-parse HEAD)
+LINT_FILES := $(shell find $(LINT_DIRECTORIES) -name '*.py' | xargs)
 
 help:
 	@echo 'For convenience'

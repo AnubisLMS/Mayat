@@ -12,7 +12,7 @@ class AST:
         self.weight = 0
 
     def hash(self):
-        child_fingerprints = ''.join(c.hash() for c in self.children)
+        child_fingerprints = "".join(c.hash() for c in self.children)
         self.fingerprint = sha256(
             (self.kind.name + child_fingerprints).encode()
         ).hexdigest()

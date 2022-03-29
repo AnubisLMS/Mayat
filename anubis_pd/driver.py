@@ -11,7 +11,7 @@ from anubis_pd.Checker import Checker
 def driver(AST_class, args):
     # Print current time and the raw command
     print(datetime.now())
-    print(' '.join(sys.argv))
+    print(" ".join(sys.argv))
     print()
 
     # Start datetime
@@ -21,7 +21,7 @@ def driver(AST_class, args):
     asts = {}
     for dirname in os.listdir(args.dir):
         path = f"{args.dir}/{dirname}/{args.subpath}"
-        if (not os.path.exists(path)):
+        if not os.path.exists(path):
             print(f"{args.dir}/{dirname} doesn't have {args.subpath}")
             continue
 
@@ -33,7 +33,7 @@ def driver(AST_class, args):
     keys = list(asts.keys())
     results = []
     for i in range(len(keys)):
-        for j in range(i+1, len(keys)):
+        for j in range(i + 1, len(keys)):
             path1 = keys[i]
             path2 = keys[j]
             checker = Checker(
@@ -41,7 +41,7 @@ def driver(AST_class, args):
                 path2,
                 asts[path1].preorder(),
                 asts[path2].preorder(),
-                threshold=args.threshold
+                threshold=args.threshold,
             )
 
             checker.check()

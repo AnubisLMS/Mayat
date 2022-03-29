@@ -26,14 +26,18 @@ class Checker:
 
         for node in arrLL:
             key = (node.weight, node.fingerprint)
-            if node.weight < self.threshold: continue
+            if node.weight < self.threshold:
+                continue
 
             if key in overlaps:
-                if overlaps[key] == 0: continue
+                if overlaps[key] == 0:
+                    continue
                 overlaps[key] -= 1
 
-            if node.parent is not None\
-                and (node.parent.weight, node.parent.fingerprint) in overlaps:
+            if (
+                node.parent is not None
+                and (node.parent.weight, node.parent.fingerprint) in overlaps
+            ):
                 continue
 
             if key in overlaps:
