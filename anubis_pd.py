@@ -42,8 +42,8 @@ class AST:
         return lst
     
     @classmethod
-    def create(cls, node):
-        NotImplemented
+    def create(cls, path):
+        raise NotImplementedError("create() method not implemented!")
 
 class Checker:
     def __init__(self, path1, path2, arrLL1, arrLL2, threshold=5):
