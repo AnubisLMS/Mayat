@@ -1,6 +1,6 @@
 from hashlib import sha256
 
-
+# Base class for Abstract Syntax Trees
 class AST:
     def __init__(self, parent=None, name=None, pos=None, kind=None):
         self.parent = parent

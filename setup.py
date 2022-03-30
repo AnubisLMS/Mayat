@@ -19,7 +19,7 @@ with open('requirements_dev.txt') as requirements_dev_file:
     test_requirements = parse_requirements(requirements_dev_file.read())
 
 setup(
-    author="Maxwell Yang",
+    author="Tian(Maxwell) Yang",
     python_requires='>=3.5',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
@@ -41,7 +41,7 @@ setup(
     keywords='anubis',
     name='anubis-pd',
     packages=find_packages(include=['anubis_pd', 'anubis_pd.*']),
-    setup_requires=setup_requirements,
+    # setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
     version='0.0.0',

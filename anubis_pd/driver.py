@@ -1,10 +1,7 @@
 import os
 import sys
-import argparse
 from datetime import datetime
-import textwrap
 
-# Base class for AST classes for other programming languages
 from anubis_pd.Checker import Checker
 
 
