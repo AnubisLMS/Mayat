@@ -3,23 +3,25 @@ import sys
 from datetime import datetime
 
 from anubis_pd.Checker import Checker
+from anubis_pd.Result import Result
 
 
-def driver(AST_class, args):
-    # Print current time and the raw command
-    print(datetime.now())
-    print(" ".join(sys.argv))
-    print()
+def driver(AST_class, dir, subpath, threshold=5):
+    result = Result()
+
+    # Record current time and the raw command
+    result.current_datetime = datetime.now()
+    result.raw_command = " ".join(sys.argv)
 
     # Start datetime
     start_time = datetime.now()
 
     # Translate all code to ASTs
     asts = {}
-    for dirname in os.listdir(args.dir):
-        path = f"{args.dir}/{dirname}/{args.subpath}"
+    for dirname in os.listdir(dir):
+        path = f"{dir}/{dirname}/{subpath}"
         if not os.path.exists(path):
-            print(f"{args.dir}/{dirname} doesn't have {args.subpath}")
+            result.header_info.append(f"{dir}/{dirname} doesn't have {subpath}")
             continue
 
         ast = AST_class.create(path)
@@ -28,7 +30,6 @@ def driver(AST_class, args):
 
     # Run matching algorithm
     keys = list(asts.keys())
-    results = []
     for i in range(len(keys)):
         for j in range(i + 1, len(keys)):
             path1 = keys[i]
@@ -38,21 +39,17 @@ def driver(AST_class, args):
                 path2,
                 asts[path1].preorder(),
                 asts[path2].preorder(),
-                threshold=args.threshold,
+                threshold=threshold,
             )
 
             checker.check()
-            results.append(checker)
+            result.checkers.append(checker)
 
     # Stop datetime
     end_time = datetime.now()
 
-    # Print total time used
-    print()
-    print(f"Duration: {(end_time-start_time).seconds}s")
-    print()
+    # Record total time used
+    result.duration = (end_time-start_time).seconds
+    result.checkers.sort(key=lambda x: -x.similarity)
 
-    # Print similarities in descending order
-    results.sort(key=lambda x: -x.similarity)
-    for r in results:
-        print(f"{r.path1} - {r.path2}:\t{r.similarity:%}")
+    return result

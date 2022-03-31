@@ -36,10 +36,11 @@ arg_parser.add_argument(
     dest="libclang_path",
     help="The path to libclang, a C API used for analyzing the AST of C code",
 )
-args = arg_parser.parse_args()
 
 def main():
     global index
+
+    args = arg_parser.parse_args()
     # /Library/Developer/CommandLineTools/usr/lib
     if args.libclang_path is not None:
         clang.cindex.Config.set_library_path(args.libclang_path)
@@ -53,7 +54,8 @@ def main():
             )
             sys.exit()
 
-    driver(C_AST, args)
+    result = driver(C_AST, dir=args.dir, subpath=args.subpath, threshold=args.threshold)
+    print(result)
 
 if __name__ == "__main__":
     main()
