@@ -5,6 +5,7 @@ from anubis_pd.AST import AST
 from anubis_pd.args import arg_parser
 from anubis_pd.driver import driver
 
+
 class C_AST(AST):
     def __init__(self, parent=None, name=None, pos=None, kind=None):
         AST.__init__(self, parent, name, pos, kind)
@@ -31,11 +32,13 @@ class C_AST(AST):
 
         return helper(prog.cursor)
 
+
 arg_parser.add_argument(
     "--libclang",
     dest="libclang_path",
     help="The path to libclang, a C API used for analyzing the AST of C code",
 )
+
 
 def main():
     global index
@@ -56,6 +59,7 @@ def main():
 
     result = driver(C_AST, dir=args.dir, subpath=args.subpath, threshold=args.threshold)
     print(result)
+
 
 if __name__ == "__main__":
     main()

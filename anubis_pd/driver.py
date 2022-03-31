@@ -49,7 +49,7 @@ def driver(AST_class, dir, subpath, threshold=5):
     end_time = datetime.now()
 
     # Record total time used
-    result.duration = (end_time-start_time).seconds
+    result.duration = (end_time - start_time).seconds
     result.checkers.sort(key=lambda x: -x.similarity)
 
     return result
