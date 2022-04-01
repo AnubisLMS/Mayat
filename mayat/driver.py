@@ -2,8 +2,8 @@ import os
 import sys
 from datetime import datetime
 
-from anubis_pd.Checker import Checker
-from anubis_pd.Result import Result
+from mayat.Checker import Checker
+from mayat.Result import Result
 
 
 def driver(AST_class, dir, subpath, threshold=5):

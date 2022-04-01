@@ -1,9 +1,9 @@
 import sys
 import clang.cindex
 
-from anubis_pd.AST import AST
-from anubis_pd.args import arg_parser
-from anubis_pd.driver import driver
+from mayat.AST import AST
+from mayat.args import arg_parser
+from mayat.driver import driver
 
 
 class C_AST(AST):
