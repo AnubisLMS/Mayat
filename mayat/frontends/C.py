@@ -11,7 +11,7 @@ class C_AST(AST):
         AST.__init__(self, parent, name, pos, kind)
 
     @classmethod
-    def create(cls, path):
+    def create(cls, path, **kwargs):
         def helper(node, parent=None):
             c_ast_node = C_AST(
                 parent=parent,
@@ -28,6 +28,7 @@ class C_AST(AST):
 
             return c_ast_node
 
+        index = dict(kwargs)["index"]
         prog = index.parse(path)
 
         return helper(prog.cursor)
@@ -41,8 +42,6 @@ arg_parser.add_argument(
 
 
 def main():
-    global index
-
     args = arg_parser.parse_args()
     # /Library/Developer/CommandLineTools/usr/lib
     if args.libclang_path is not None:
@@ -57,7 +56,9 @@ def main():
             )
             sys.exit()
 
-    result = driver(C_AST, dir=args.dir, subpath=args.subpath, threshold=args.threshold)
+    result = driver(
+        C_AST, dir=args.dir, subpath=args.subpath, threshold=args.threshold, index=index
+    )
     print(result)
 
 

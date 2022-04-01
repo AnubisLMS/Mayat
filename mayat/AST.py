@@ -37,5 +37,5 @@ class AST:
         return lst
 
     @classmethod
-    def create(cls, path):
+    def create(cls, path, **kwargs):
         raise NotImplementedError("create() method not implemented!")

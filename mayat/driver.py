@@ -6,7 +6,7 @@ from mayat.Checker import Checker
 from mayat.Result import Result
 
 
-def driver(AST_class, dir, subpath, threshold=5):
+def driver(AST_class, dir, subpath, threshold=5, **kwargs):
     result = Result()
 
     # Record current time and the raw command
@@ -24,7 +24,7 @@ def driver(AST_class, dir, subpath, threshold=5):
             result.header_info.append(f"{dir}/{dirname} doesn't have {subpath}")
             continue
 
-        ast = AST_class.create(path)
+        ast = AST_class.create(path, **kwargs)
         ast.hash()
         asts[path] = ast
 
