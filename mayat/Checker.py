@@ -9,6 +9,9 @@ class Checker:
 
     # The optimized version
     def check(self):
+        """
+        Check the similarities of two ASTs
+        """
         arrLL1_set = {(node.weight, node.fingerprint) for node in self.arrLL1}
 
         # The overlapped (node.weight, node.fingerprint) along with its occurrence

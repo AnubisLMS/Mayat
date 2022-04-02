@@ -7,6 +7,20 @@ from mayat.Result import Result
 
 
 def driver(AST_class, dir, subpath, threshold=5, **kwargs):
+    """
+    A driver function to run the plagiarism detection algorithm over a set of
+    students' code
+
+    Arguments:
+        AST_class: The AST class of the programming language students' code
+                   written in
+        dir: The directory the source code files live in
+        subpath: The path to the file relative to each student's directory
+        threshold: The granularity of code the algorithm will check
+        **kwargs: Additional resources needed
+    Return:
+        A Result instance containing the result coming out of the algorithm
+    """
     result = Result()
 
     # Record current time and the raw command

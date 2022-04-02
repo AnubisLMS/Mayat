@@ -12,6 +12,12 @@ class AST:
         self.weight = 0
 
     def hash(self):
+        """
+        Hash this node by concatenating the kind and its children's fingerprints
+
+        Returns:
+            The fingerprint(hash value)
+        """
         child_fingerprints = "".join(c.hash() for c in self.children)
         self.fingerprint = sha256(
             (self.kind.name + child_fingerprints).encode()
@@ -20,6 +26,12 @@ class AST:
         return self.fingerprint
 
     def display(self, level=0):
+        """
+        Recursively print out the entire tree structure
+
+        Arguments:
+            level: The level of this node(for indentation purpose)
+        """
         print("    " * level + str(self))
         for child in self.children:
             child.display(level + 1)
@@ -31,6 +43,12 @@ class AST:
         return str(self)
 
     def preorder(self):
+        """
+        The preorder traversal of this tree
+
+        Returns:
+            A list of nodes in preorder
+        """
         lst = [self]
         for child in self.children:
             lst += child.preorder()
@@ -38,4 +56,12 @@ class AST:
 
     @classmethod
     def create(cls, path, **kwargs):
+        """
+        Create an AST of the program pointed by the path. This class method is
+        meant to be overrided in the child class
+
+        Parameters:
+            path: The path to the program
+            **kwargs: Additional resources needed to create an AST
+        """
         raise NotImplementedError("create() method not implemented!")
