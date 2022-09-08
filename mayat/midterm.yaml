@@ -1,3 +1,7 @@
 user:
   tail.c:
-    fn main
+    - fn main
+    - fn tail
+  cat.c: '*'
+  wc.c:
+    - fn main
