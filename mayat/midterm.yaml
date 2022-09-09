@@ -1,7 +1,10 @@
 user:
   tail.c:
-    - fn main
-    - fn tail
+    - name: main
+      kind: function
+    - name: tail
+      kind: function
   cat.c: '*'
   wc.c:
-    - fn main
+    - name: main
+      kind: function

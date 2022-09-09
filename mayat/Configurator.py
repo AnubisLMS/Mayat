@@ -42,7 +42,8 @@ class Configuration:
                 else:
                     new_checkpoint = Checkpoint()
                     for identifier in mapping:
-                        kind, name = identifier.split()
+                        name = identifier['name']
+                        kind = identifier['kind']
                         new_checkpoint.add_identifier(name, kind)
 
                     yield new_checkpoint
