@@ -22,10 +22,16 @@ arg_parser.add_argument(
     help="The main directory storing the code",
     required=True,
 )
+# arg_parser.add_argument(
+#     "-p",
+#     dest="subpath",
+#     help="The path relative to the directories under the main directory to the code itself",
+#     required=True,
+# )
 arg_parser.add_argument(
-    "-p",
-    dest="subpath",
-    help="The path relative to the directories under the main directory to the code itself",
+    "-c",
+    dest="config_file",
+    help="Path to the .yaml configuration file",
     required=True,
 )
 arg_parser.add_argument(

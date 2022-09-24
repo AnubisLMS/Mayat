@@ -6,6 +6,11 @@ from mayat.args import arg_parser
 from mayat.driver import driver
 
 
+KIND_MAP = {
+    "function": "FUNCTION_DECL"
+}
+
+
 class C_AST(AST):
     def __init__(self, parent=None, name=None, pos=None, kind=None):
         AST.__init__(self, parent, name, pos, kind)
@@ -57,7 +62,12 @@ def main():
             sys.exit()
 
     result = driver(
-        C_AST, dir=args.dir, subpath=args.subpath, threshold=args.threshold, index=index
+        C_AST,
+        dir=args.dir,
+        config_file=args.config_file,
+        kind_map=KIND_MAP,
+        threshold=args.threshold,
+        index=index
     )
     print(result)
 

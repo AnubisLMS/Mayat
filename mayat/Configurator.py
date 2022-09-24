@@ -7,7 +7,10 @@ class Checkpoint:
         self.path = path
 
     def prepend_path(self, path):
-        self.path = os.path.join(path, self.path)
+        if len(self.path) == 0:
+            self.path = path
+        else:
+            self.path = os.path.join(path, self.path)
 
     def add_identifier(self, name, kind):
         self.identifiers.append((name, kind))

@@ -53,22 +53,22 @@ class AST:
         for child in self.children:
             lst += child.preorder()
         return lst
-    
-    def subtree_preorder(self, kind, name):
+
+    def subtree(self, kind, name):
         def get_subtree_root(root, kind, name):
-            if root.kind == kind and root.name == name:
+            if root.kind.name == kind and root.name == name:
                 return root
-            
-            for child in self.children:
+
+            for child in root.children:
                 child_result = get_subtree_root(child, kind, name)
                 if child_result is not None:
                     return child_result
-        
+
         subtree_root = get_subtree_root(self, kind, name)
         if subtree_root is None:
             raise Exception("Cannot find specified kind and identifier name")
-        
-        return subtree_root.preorder()
+
+        return subtree_root
 
     @classmethod
     def create(cls, path, **kwargs):
