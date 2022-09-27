@@ -61,7 +61,7 @@ def main():
             )
             sys.exit()
 
-    result = driver(
+    driver(
         C_AST,
         dir=args.dir,
         config_file=args.config_file,
@@ -69,7 +69,6 @@ def main():
         threshold=args.threshold,
         index=index
     )
-    print(result)
 
 
 if __name__ == "__main__":

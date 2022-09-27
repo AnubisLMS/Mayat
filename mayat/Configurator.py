@@ -28,9 +28,6 @@ class Configuration:
         self.checkpoints = []
         self.gen_paths()
 
-        for cp in self.checkpoints:
-            print(cp)
-
     def gen_paths(self):
         def helper(mapping):
             if isinstance(mapping, dict):

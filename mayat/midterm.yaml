@@ -2,9 +2,3 @@ user:
   tail.c:
     - name: main
       kind: function
-    - name: tail
-      kind: function
-  cat.c: '*'
-  wc.c:
-    - name: main
-      kind: function

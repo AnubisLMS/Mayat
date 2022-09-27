@@ -3,7 +3,6 @@ import sys
 from datetime import datetime
 
 from mayat.Checker import Checker
-from mayat.Result import Result
 from mayat.AST import AST
 from mayat.Configurator import Configuration, Checkpoint
 
@@ -25,11 +24,11 @@ def driver(AST_class: AST, dir: str, config_file: str, kind_map: dict, threshold
     """
     # Initialization
     config = Configuration(config_file)
-    result = Result()
 
     # Record current time and the raw command
-    result.current_datetime = datetime.now()
-    result.raw_command = " ".join(sys.argv)
+    print(datetime.now())
+    print(" ".join(sys.argv))
+    print()
 
     # Start datetime
     start_time = datetime.now()
@@ -37,26 +36,36 @@ def driver(AST_class: AST, dir: str, config_file: str, kind_map: dict, threshold
     for checkpoint in config.checkpoints:
         # Translate all code to ASTs
         subpath = checkpoint.path
+        print(subpath)
+        print()
+
         asts = {}
         for dirname in os.listdir(dir):
             path = os.path.join(dir, dirname, subpath)
-            print(path)
             if not os.path.exists(path):
-                result.header_info.append(f"{os.path.join(dir, dirname)} doesn't have {subpath}")
+                print(f"{os.path.join(dir, dirname)} doesn't have {subpath}")
                 continue
 
             ast = AST_class.create(path, **kwargs)
             ast.hash()
             asts[path] = ast
+        print()
 
         for name, kind in checkpoint.identifiers:
             kind = kind_map[kind]
             print(f"Checking {checkpoint.path}: {kind} {name}")
+            print()
+
+            # Extract Sub-AST for this specific name and kind
             local_asts = {}
             for path in asts:
-                local_asts[path] = asts[path].subtree(kind, name)
+                try:
+                    local_asts[path] = asts[path].subtree(kind, name)
+                except:
+                    print(f"{path} doesn't have {name}:{kind}")
 
             # Run matching algorithm
+            checkers = []
             keys = list(local_asts.keys())
             for i in range(len(keys)):
                 for j in range(i + 1, len(keys)):
@@ -71,13 +80,16 @@ def driver(AST_class: AST, dir: str, config_file: str, kind_map: dict, threshold
                     )
 
                     checker.check()
-                    result.checkers.append(checker)
+                    checkers.append(checker)
+
+            # Print result
+            checkers.sort(key=lambda x: -x.similarity)
+            for c in checkers:
+                print(f"{c.path1} - {c.path2}:\t{c.similarity:%}")
+            print()
 
     # Stop datetime
     end_time = datetime.now()
 
     # Record total time used
-    result.duration = (end_time - start_time).seconds
-    result.checkers.sort(key=lambda x: -x.similarity)
-
-    return result
+    print(f"{(end_time - start_time).seconds}s")
