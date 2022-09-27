@@ -1,4 +1,3 @@
 user:
   tail.c:
-    - name: main
-      kind: function
+    "*"

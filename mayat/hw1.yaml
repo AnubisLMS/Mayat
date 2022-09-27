@@ -1,2 +1,2 @@
 user:
-  tail.c
+  tail.c: "*"

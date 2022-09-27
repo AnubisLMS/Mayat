@@ -51,4 +51,6 @@ class Configuration:
         self.checkpoints = list(helper(self.raw_config))
 
 if __name__ == "__main__":
-    config = Configuration("midterm.yaml")
+    config = Configuration("hw1.yaml")
+    for c in config.checkpoints:
+        print(c)

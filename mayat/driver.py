@@ -51,20 +51,31 @@ def driver(AST_class: AST, dir: str, config_file: str, kind_map: dict, threshold
             asts[path] = ast
         print()
 
-        for name, kind in checkpoint.identifiers:
-            kind = kind_map[kind]
-            print(f"Checking {checkpoint.path}: {kind} {name}")
+        # Find Sub ASTs based on checkpoints
+        checkpoint_to_asts = {}
+        if len(checkpoint.identifiers) == 0: # Checks the whole file
+            checkpoint_to_asts[(subpath, '*', '*')] = asts
+        else:                                # Checks partial code
+            for name, kind in checkpoint.identifiers:
+                kind = kind_map[kind]
+
+                # Extract Sub-AST for this specific name and kind
+                local_asts = {}
+                for path in asts:
+                    try:
+                        local_asts[path] = asts[path].subtree(kind, name)
+                    except:
+                        print(f"{path} doesn't have {name}:{kind}")
+                print()
+
+                checkpoint_to_asts[(subpath, name, kind)] = local_asts
+
+        # Run matching algorithm
+        for (subpath, name, kind) in checkpoint_to_asts:
+            print(f"Checking {subpath}: {name}:{kind}")
             print()
+            local_asts = checkpoint_to_asts[(subpath, name, kind)]
 
-            # Extract Sub-AST for this specific name and kind
-            local_asts = {}
-            for path in asts:
-                try:
-                    local_asts[path] = asts[path].subtree(kind, name)
-                except:
-                    print(f"{path} doesn't have {name}:{kind}")
-
-            # Run matching algorithm
             checkers = []
             keys = list(local_asts.keys())
             for i in range(len(keys)):
