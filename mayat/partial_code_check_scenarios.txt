@@ -1,5 +1,0 @@
-1. Check functions with known names written by students
-2. Check functions with unknown names written by students
-3. Check functions partially written by students
-4. Check several lines of code written outside any function
-5. Check new files created by students
