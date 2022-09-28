@@ -50,6 +50,12 @@ class Configuration:
 
         self.checkpoints = list(helper(self.raw_config))
 
+    def __repr__(self):
+        result = ""
+        for c in self.checkpoints:
+            result += str(c) + '\n'
+        return result
+
 if __name__ == "__main__":
     config = Configuration("hw1.yaml")
     for c in config.checkpoints:

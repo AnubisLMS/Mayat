@@ -22,13 +22,15 @@ def driver(AST_class: AST, dir: str, config_file: str, kind_map: dict, threshold
     Return:
         A Result instance containing the result coming out of the algorithm
     """
-    # Initialization
-    config = Configuration(config_file)
-
     # Record current time and the raw command
     print(datetime.now())
     print(" ".join(sys.argv))
     print()
+
+    # Initialization
+    config = Configuration(config_file)
+    print("Things to check:")
+    print(config)
 
     # Start datetime
     start_time = datetime.now()
@@ -104,3 +106,4 @@ def driver(AST_class: AST, dir: str, config_file: str, kind_map: dict, threshold
 
     # Record total time used
     print(f"{(end_time - start_time).seconds}s")
+
