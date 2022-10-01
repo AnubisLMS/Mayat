@@ -7,7 +7,7 @@ from mayat.AST import AST
 from mayat.Configurator import Configuration, Checkpoint
 
 
-def driver(AST_class: AST, dir: str, config_file: str, kind_map: dict, threshold: int=5, **kwargs):
+def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **kwargs):
     """
     A driver function to run the plagiarism detection algorithm over a set of
     students' code
@@ -28,7 +28,6 @@ def driver(AST_class: AST, dir: str, config_file: str, kind_map: dict, threshold
     print()
 
     # Initialization
-    config = Configuration(config_file)
     print("Things to check:")
     print(config)
 
@@ -59,8 +58,6 @@ def driver(AST_class: AST, dir: str, config_file: str, kind_map: dict, threshold
             checkpoint_to_asts[(subpath, '*', '*')] = asts
         else:                                # Checks partial code
             for name, kind in checkpoint.identifiers:
-                kind = kind_map[kind]
-
                 # Extract Sub-AST for this specific name and kind
                 local_asts = {}
                 for path in asts:

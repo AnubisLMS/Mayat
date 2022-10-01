@@ -4,6 +4,7 @@ import clang.cindex
 from mayat.AST import AST
 from mayat.args import arg_parser
 from mayat.driver import driver
+from mayat.Configurator import Configuration
 
 
 KIND_MAP = {
@@ -48,7 +49,7 @@ arg_parser.add_argument(
 
 def main():
     args = arg_parser.parse_args()
-    # /Library/Developer/CommandLineTools/usr/lib
+
     if args.libclang_path is not None:
         clang.cindex.Config.set_library_path(args.libclang_path)
         index = clang.cindex.Index.create()
@@ -61,11 +62,11 @@ def main():
             )
             sys.exit()
 
+    config = Configuration(args.config_file, KIND_MAP)
     driver(
         C_AST,
         dir=args.dir,
-        config_file=args.config_file,
-        kind_map=KIND_MAP,
+        config=config,
         threshold=args.threshold,
         index=index
     )

@@ -23,9 +23,11 @@ class Checkpoint:
         return str(self)
 
 class Configuration:
-    def __init__(self, filename: str):
+    def __init__(self, filename: str, kind_map: dict):
         self.raw_config = yaml.load(open(filename, 'r'), Loader=yaml.Loader)
         self.checkpoints = []
+        self.kind_map = kind_map
+
         self.gen_paths()
 
     def gen_paths(self):
@@ -43,7 +45,7 @@ class Configuration:
                     new_checkpoint = Checkpoint()
                     for identifier in mapping:
                         name = identifier['name']
-                        kind = identifier['kind']
+                        kind = self.kind_map[identifier['kind']]
                         new_checkpoint.add_identifier(name, kind)
 
                     yield new_checkpoint
