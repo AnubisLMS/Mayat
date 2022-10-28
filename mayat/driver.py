@@ -22,35 +22,43 @@ def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **
     Return:
         A Result instance containing the result coming out of the algorithm
     """
+
+    result = {}
+
     # Record current time and the raw command
-    print(datetime.now())
-    print(" ".join(sys.argv))
-    print()
+    result["current_datetime"] = datetime.now()
+    result["command"] = " ".join(sys.argv)
 
     # Initialization
-    print("Things to check:")
-    print(config)
+    result["checkpoints"] = [str(c) for c in config.checkpoints]
 
     # Start datetime
     start_time = datetime.now()
 
+    checkpoint_results = []
+    result["checkpoint_results"] = checkpoint_results
+    
+    # Check all checkpoints
     for checkpoint in config.checkpoints:
+        one_result = {}
+        checkpoint_results.append(one_result)
+        warnings = []
+        one_result["warnings"] = warnings
+        
         # Translate all code to ASTs
         subpath = checkpoint.path
-        print(subpath)
-        print()
+        one_result["subpath"] = subpath
 
         asts = {}
         for dirname in os.listdir(dir):
             path = os.path.join(dir, dirname, subpath)
             if not os.path.exists(path):
-                print(f"{os.path.join(dir, dirname)} doesn't have {subpath}")
+                warnings.append(f"{os.path.join(dir, dirname)} doesn't have {subpath}")
                 continue
 
             ast = AST_class.create(path, **kwargs)
             ast.hash()
             asts[path] = ast
-        print()
 
         # Find Sub ASTs based on checkpoints
         checkpoint_to_asts = {}
@@ -64,15 +72,15 @@ def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **
                     try:
                         local_asts[path] = asts[path].subtree(kind, name)
                     except:
-                        print(f"{path} doesn't have {name}:{kind}")
-                print()
+                        warnings.append(f"{path} doesn't have {name}:{kind}")
 
                 checkpoint_to_asts[(subpath, name, kind)] = local_asts
 
         # Run matching algorithm
+        path_name_kind_result = {}
+        one_result["path_name_kind_result"] = path_name_kind_result
         for (subpath, name, kind) in checkpoint_to_asts:
-            print(f"Checking {subpath}: {name}:{kind}")
-            print()
+            path_name_kind_result["path_name_kind"] = f"Checking {subpath}: {name}:{kind}"
             local_asts = checkpoint_to_asts[(subpath, name, kind)]
 
             checkers = []
@@ -93,14 +101,15 @@ def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **
                     checkers.append(checker)
 
             # Print result
-            checkers.sort(key=lambda x: -x.similarity)
+            similarity_scores = []
+            path_name_kind_result["similarity_scores"] = similarity_scores
             for c in checkers:
-                print(f"{c.path1} - {c.path2}:\t{c.similarity:%}")
-            print()
+                similarity_scores.append(f"{c.path1} - {c.path2}:\t{c.similarity:%}")
 
     # Stop datetime
     end_time = datetime.now()
 
     # Record total time used
-    print(f"{(end_time - start_time).seconds}s")
+    result["execution_time"] = f"{(end_time - start_time).seconds}s"
 
+    return result

@@ -63,13 +63,15 @@ def main():
             sys.exit()
 
     config = Configuration(args.config_file, KIND_MAP)
-    driver(
+    result = driver(
         C_AST,
         dir=args.dir,
         config=config,
         threshold=args.threshold,
         index=index
     )
+
+    print(result)
 
 
 if __name__ == "__main__":
