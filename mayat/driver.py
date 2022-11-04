@@ -26,7 +26,7 @@ def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **
     result = {}
 
     # Record current time and the raw command
-    result["current_datetime"] = datetime.now()
+    result["current_datetime"] = str(datetime.now())
     result["command"] = " ".join(sys.argv)
 
     # Initialization
@@ -80,7 +80,8 @@ def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **
         path_name_kind_result = {}
         one_result["path_name_kind_result"] = path_name_kind_result
         for (subpath, name, kind) in checkpoint_to_asts:
-            path_name_kind_result["path_name_kind"] = f"Checking {subpath}: {name}:{kind}"
+            path_name_kind_result["name"] = name
+            path_name_kind_result["kind"] = kind
             local_asts = checkpoint_to_asts[(subpath, name, kind)]
 
             checkers = []
@@ -102,9 +103,13 @@ def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **
 
             # Print result
             similarity_scores = []
-            path_name_kind_result["similarity_scores"] = similarity_scores
+            path_name_kind_result["entries"] = similarity_scores
             for c in checkers:
-                similarity_scores.append(f"{c.path1} - {c.path2}:\t{c.similarity:%}")
+                similarity_scores.append({
+                    "submission_A": c.path1,
+                    "submission_B": c.path2,
+                    "similarity": c.similarity
+                })
 
     # Stop datetime
     end_time = datetime.now()

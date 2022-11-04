@@ -1,4 +1,5 @@
 import sys
+import json
 import clang.cindex
 
 from mayat.AST import AST
@@ -71,7 +72,7 @@ def main():
         index=index
     )
 
-    print(result)
+    print(json.dumps(result, indent=4))
 
 
 if __name__ == "__main__":
