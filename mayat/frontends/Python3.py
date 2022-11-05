@@ -63,5 +63,4 @@ def main():
 
 
 if __name__ == "__main__":
-    prog = Python_AST.create("mayat/frontends/test.py")
-    prog.display()
+    main()

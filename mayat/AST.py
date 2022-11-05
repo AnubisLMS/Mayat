@@ -20,7 +20,7 @@ class AST:
         """
         child_fingerprints = "".join(c.hash() for c in self.children)
         self.fingerprint = sha256(
-            (self.kind.name + child_fingerprints).encode()
+            (self.kind + child_fingerprints).encode()
         ).hexdigest()
 
         return self.fingerprint
