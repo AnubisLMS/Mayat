@@ -1,5 +1,9 @@
 from hashlib import sha256
 
+
+class ASTGenerationException(Exception):
+    pass
+
 # Base class for Abstract Syntax Trees
 class AST:
     def __init__(self, parent=None, name=None, pos=None, kind=None):

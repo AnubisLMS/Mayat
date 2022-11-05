@@ -1,6 +1,6 @@
 import ast
 
-from mayat.AST import AST
+from mayat.AST import AST, ASTGenerationException
 from mayat.args import arg_parser
 from mayat.driver import driver
 from mayat.Configurator import Configuration
@@ -45,7 +45,10 @@ class Python_AST(AST):
             return python_ast_node
 
         with open(path, 'r') as f:
-            prog = ast.parse(f.read())
+            try:
+                prog = ast.parse(f.read())
+            except:
+                raise ASTGenerationException
 
             return helper(prog)
 
