@@ -40,14 +40,14 @@ def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **
     
     # Check all checkpoints
     for checkpoint in config.checkpoints:
-        one_result = {}
-        checkpoint_results.append(one_result)
+        one_file = {}
+        checkpoint_results.append(one_file)
         warnings = []
-        one_result["warnings"] = warnings
+        one_file["warnings"] = warnings
         
         # Translate all code to ASTs
         subpath = checkpoint.path
-        one_result["subpath"] = subpath
+        one_file["subpath"] = subpath
 
         asts = {}
         for dirname in os.listdir(dir):
@@ -77,11 +77,13 @@ def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **
                 checkpoint_to_asts[(subpath, name, kind)] = local_asts
 
         # Run matching algorithm
-        path_name_kind_result = {}
-        one_result["path_name_kind_result"] = path_name_kind_result
+        path_name_kind_result = []
+        one_file["path_name_kind_result"] = path_name_kind_result
         for (subpath, name, kind) in checkpoint_to_asts:
-            path_name_kind_result["name"] = name
-            path_name_kind_result["kind"] = kind
+            one_result = {}
+            path_name_kind_result.append(one_result)
+            one_result["name"] = name
+            one_result["kind"] = kind
             local_asts = checkpoint_to_asts[(subpath, name, kind)]
 
             checkers = []
@@ -103,7 +105,7 @@ def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **
 
             # Print result
             similarity_scores = []
-            path_name_kind_result["entries"] = similarity_scores
+            one_result["entries"] = similarity_scores
             for c in checkers:
                 similarity_scores.append({
                     "submission_A": c.path1,
