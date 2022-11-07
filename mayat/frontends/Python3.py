@@ -54,6 +54,9 @@ class Python_AST(AST):
 
 
 def main():
+    for action in arg_parser._actions:
+        if action.dest == "threshold":
+            action.default = 30
     args = arg_parser.parse_args()
 
     config = Configuration(args.config_file, KIND_MAP)
