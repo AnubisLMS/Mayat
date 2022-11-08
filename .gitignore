@@ -6,5 +6,7 @@ build
 dist
 __pycache__
 helper.py
-result.txt
+result.*
 f22_OS_homework1_result.txt
+mayat/*.yaml
+*.yaml
