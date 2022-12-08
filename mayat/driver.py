@@ -30,7 +30,7 @@ def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **
     result["command"] = " ".join(sys.argv)
 
     # Initialization
-    result["checkpoints"] = [str(c) for c in config.checkpoints]
+    result["checkpoints"] = [c.__dict__ for c in config.checkpoints]
 
     # Start datetime
     start_time = datetime.now()
@@ -117,6 +117,6 @@ def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **
     end_time = datetime.now()
 
     # Record total time used
-    result["execution_time"] = f"{(end_time - start_time).seconds}s"
+    result["execution_time"] = (end_time - start_time).total_seconds()
 
     return result
