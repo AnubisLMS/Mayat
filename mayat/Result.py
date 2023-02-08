@@ -1,26 +1,28 @@
-class Result:
-    def __init__(self):
-        self.raw_command = ""
-        self.current_datetime = None
-        self.header_info = []
-        self.checkers = []
-        self.duration = 0
+def print_str(result_dict):
+    print(result_dict["current_datetime"])
+    print(result_dict["command"])
+    print()
 
-    def __str__(self):
-        output = ""
-        output += self.raw_command + "\n"
-        output += str(self.current_datetime) + "\n\n"
+    print("Things to check:")
+    for cp in result_dict["checkpoints"]:
+        print(f"{cp['path']}: {' | '.join([f'{id[1]} {id[0]}' for id in cp['identifiers']])}")
 
-        for info in self.header_info:
-            output += info + "\n"
+    for result in result_dict["checkpoint_results"]:
+        print()
+        print()
+        print(result["subpath"])
+        print()
 
-        output += "\n"
-        output += f"{self.duration}s\n\n"
+        for warning in result["warnings"]:
+            print(warning)
+        print()
+        
+        for pnk_result in result["path_name_kind_result"]:
+            print(f"Results for {result['subpath']}: {pnk_result['name']}:{pnk_result['kind']}")
+            print()
 
-        for c in self.checkers:
-            output += f"{c.path1} - {c.path2}:\t{c.similarity:%}\n"
-
-        return output
-
-    def __repr__(self):
-        return str(self)
+            for entry in sorted(pnk_result["entries"], key=lambda x: x["similarity"], reverse=True):
+                print(f"{entry['submission_A']} - {entry['submission_B']}:\t{entry['similarity']:%}")
+            print()
+    
+    print(f"{result_dict['execution_time']}s")

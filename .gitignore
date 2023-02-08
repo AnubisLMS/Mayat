@@ -6,5 +6,4 @@ build
 dist
 __pycache__
 helper.py
-result.txt
-f22_OS_homework1_result.txt
+result.*
