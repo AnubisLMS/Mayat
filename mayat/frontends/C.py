@@ -24,7 +24,7 @@ class C_AST(AST):
                 parent=parent,
                 name=node.spelling,
                 pos=(node.location.line, node.location.column),
-                kind=node.kind,
+                kind=node.kind.name,
             )
 
             c_ast_node.weight = 1

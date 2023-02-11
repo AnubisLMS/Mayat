@@ -3,7 +3,7 @@ import sys
 from datetime import datetime
 
 from mayat.Checker import Checker
-from mayat.AST import AST
+from mayat.AST import AST, ASTGenerationException
 from mayat.Configurator import Configuration, Checkpoint
 
 
@@ -56,7 +56,12 @@ def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **
                 warnings.append(f"{os.path.join(dir, dirname)} doesn't have {subpath}")
                 continue
 
-            ast = AST_class.create(path, **kwargs)
+            try:
+                ast = AST_class.create(path, **kwargs)
+            except ASTGenerationException:
+                print(f"{path} cannot be properly parsed")
+                continue
+
             ast.hash()
             asts[path] = ast
 
