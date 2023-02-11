@@ -1,26 +1,38 @@
-class Result:
-    def __init__(self):
-        self.raw_command = ""
-        self.current_datetime = None
-        self.header_info = []
-        self.checkers = []
-        self.duration = 0
+import json
 
-    def __str__(self):
-        output = ""
-        output += self.raw_command + "\n"
-        output += str(self.current_datetime) + "\n\n"
+def print_str(result_dict):
+    print(result_dict["current_datetime"])
+    print(result_dict["command"])
+    print()
 
-        for info in self.header_info:
-            output += info + "\n"
+    print("Things to check:")
+    for cp in result_dict["checkpoints"]:
+        print(f"{cp['path']}: {' | '.join([f'{id[1]} {id[0]}' for id in cp['identifiers']])}")
 
-        output += "\n"
-        output += f"{self.duration}s\n\n"
+    for result in result_dict["checkpoint_results"]:
+        print()
+        print()
+        print(result["subpath"])
+        print()
 
-        for c in self.checkers:
-            output += f"{c.path1} - {c.path2}:\t{c.similarity:%}\n"
+        for warning in result["warnings"]:
+            print(warning)
+        print()
+        
+        for pnk_result in result["path_name_kind_result"]:
+            print(f"Results for {result['subpath']}: {pnk_result['name']}:{pnk_result['kind']}")
+            print()
 
-        return output
+            for entry in sorted(pnk_result["entries"], key=lambda x: x["similarity"], reverse=True):
+                print(f"{entry['submission_A']} - {entry['submission_B']}:\t{entry['similarity']:%}")
+            print()
+    
+    print(f"{result_dict['execution_time']}s")
 
-    def __repr__(self):
-        return str(self)
+def print_result(result_dict, format):
+    if format == "JSON":
+        print(json.dumps(result_dict, indent=4))
+    else:
+        if format != "TXT":
+            print("Unknown output format. Using TXT format")
+        print_str(result_dict)

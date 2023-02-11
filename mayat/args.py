@@ -35,6 +35,12 @@ arg_parser.add_argument(
     required=True,
 )
 arg_parser.add_argument(
+    "-o",
+    dest="output_format",
+    default="TXT",
+    help="The format of the output. Default to TXT"
+)
+arg_parser.add_argument(
     "--threshold",
     type=int,
     default=5,

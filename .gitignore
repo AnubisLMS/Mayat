@@ -7,7 +7,3 @@ dist
 __pycache__
 helper.py
 result.*
-f22_OS_homework1_result.txt
-mayat/*.yaml
-*.yaml
-results

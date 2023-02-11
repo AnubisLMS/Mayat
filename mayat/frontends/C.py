@@ -5,6 +5,7 @@ from mayat.AST import AST
 from mayat.args import arg_parser
 from mayat.driver import driver
 from mayat.Configurator import Configuration
+from mayat.Result import print_result
 
 
 KIND_MAP = {
@@ -63,13 +64,15 @@ def main():
             sys.exit()
 
     config = Configuration(args.config_file, KIND_MAP)
-    driver(
+    result = driver(
         C_AST,
         dir=args.dir,
         config=config,
         threshold=args.threshold,
         index=index
     )
+
+    print_result(result, args.output_format)
 
 
 if __name__ == "__main__":
