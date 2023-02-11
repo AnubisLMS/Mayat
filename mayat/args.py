@@ -4,7 +4,7 @@ import textwrap
 
 arg_parser = argparse.ArgumentParser(
     formatter_class=argparse.RawDescriptionHelpFormatter,
-    description="Anubis AntiCheat",
+    description="Mayat",
     epilog=textwrap.dedent(
         """
     Explain:
@@ -39,6 +39,11 @@ arg_parser.add_argument(
     dest="output_format",
     default="TXT",
     help="The format of the output. Default to TXT"
+)
+arg_parser.add_argument(
+    "-a",
+    dest="list_all",
+    action="store_true"
 )
 arg_parser.add_argument(
     "--threshold",

@@ -72,7 +72,7 @@ def main():
         index=index
     )
 
-    print_result(result, args.output_format)
+    print_result(result, args.output_format, args.list_all)
 
 
 if __name__ == "__main__":

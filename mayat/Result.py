@@ -29,7 +29,14 @@ def print_str(result_dict):
     
     print(f"{result_dict['execution_time']}s")
 
-def print_result(result_dict, format):
+def print_result(result_dict, format, list_all):
+    if not list_all:
+        for result in result_dict["checkpoint_results"]:
+            for pnk_result in result["path_name_kind_result"]:
+                pnk_result["entries"] = list(
+                    filter(lambda x: x["similarity"] > 0, pnk_result["entries"])
+                )
+
     if format == "JSON":
         print(json.dumps(result_dict, indent=4))
     else:
