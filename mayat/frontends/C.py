@@ -1,12 +1,11 @@
 import sys
-import json
 import clang.cindex
 
 from mayat.AST import AST
 from mayat.args import arg_parser
 from mayat.driver import driver
 from mayat.Configurator import Configuration
-from mayat.Result import print_str
+from mayat.Result import print_result
 
 
 KIND_MAP = {
@@ -73,8 +72,7 @@ def main():
         index=index
     )
 
-    # print(json.dumps(result, indent=4))
-    print_str(result)
+    print_result(result, args.output_format)
 
 
 if __name__ == "__main__":

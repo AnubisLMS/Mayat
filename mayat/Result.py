@@ -1,3 +1,5 @@
+import json
+
 def print_str(result_dict):
     print(result_dict["current_datetime"])
     print(result_dict["command"])
@@ -26,3 +28,11 @@ def print_str(result_dict):
             print()
     
     print(f"{result_dict['execution_time']}s")
+
+def print_result(result_dict, format):
+    if format == "JSON":
+        print(json.dumps(result_dict, indent=4))
+    else:
+        if format != "TXT":
+            print("Unknown output format. Using TXT format")
+        print_str(result_dict)
