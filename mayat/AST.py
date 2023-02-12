@@ -3,6 +3,8 @@ from hashlib import sha256
 
 class ASTGenerationException(Exception):
     pass
+class ASTSearchException(Exception):
+    pass
 
 # Base class for Abstract Syntax Trees
 class AST:
@@ -60,7 +62,7 @@ class AST:
 
     def subtree(self, kind, name):
         def get_subtree_root(root, kind, name):
-            if root.kind.name == kind and root.name == name:
+            if root.kind == kind and root.name == name:
                 return root
 
             for child in root.children:
@@ -70,7 +72,7 @@ class AST:
 
         subtree_root = get_subtree_root(self, kind, name)
         if subtree_root is None:
-            raise Exception("Cannot find specified kind and identifier name")
+            raise ASTSearchException("Cannot find specified kind and identifier name")
 
         return subtree_root
 

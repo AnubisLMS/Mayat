@@ -3,7 +3,7 @@ import sys
 from datetime import datetime
 
 from mayat.Checker import Checker
-from mayat.AST import AST, ASTGenerationException
+from mayat.AST import AST, ASTGenerationException, ASTSearchException
 from mayat.Configurator import Configuration, Checkpoint
 
 
@@ -76,7 +76,7 @@ def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **
                 for path in asts:
                     try:
                         local_asts[path] = asts[path].subtree(kind, name)
-                    except:
+                    except ASTSearchException:
                         warnings.append(f"{path} doesn't have {name}:{kind}")
 
                 checkpoint_to_asts[(subpath, name, kind)] = local_asts
