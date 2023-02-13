@@ -1,5 +1,6 @@
 import os
 import sys
+from typing import List
 from datetime import datetime
 
 from mayat.Checker import Checker
@@ -7,7 +8,7 @@ from mayat.AST import AST, ASTGenerationException, ASTSearchException
 from mayat.Configurator import Configuration, Checkpoint
 
 
-def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **kwargs):
+def driver(AST_class: AST, source_filenames: List[str], threshold: int, **kwargs):
     """
     A driver function to run the plagiarism detection algorithm over a set of
     students' code
@@ -27,96 +28,68 @@ def driver(AST_class: AST, dir: str, config: Configuration, threshold: int=5, **
 
     # Record current time and the raw command
     result["current_datetime"] = str(datetime.now())
-    result["command"] = " ".join(sys.argv)
-
-    # Initialization
-    result["checkpoints"] = [c.__dict__ for c in config.checkpoints]
 
     # Start datetime
     start_time = datetime.now()
-
-    checkpoint_results = []
-    result["checkpoint_results"] = checkpoint_results
     
-    # Check all checkpoints
-    for checkpoint in config.checkpoints:
-        one_file = {}
-        checkpoint_results.append(one_file)
-        warnings = []
-        one_file["warnings"] = warnings
-        
-        # Translate all code to ASTs
-        subpath = checkpoint.path
-        one_file["subpath"] = subpath
+    warnings = []
+    result["warnings"] = warnings
+    
+    # Translate all code to ASTs
+    asts = {}
+    for filename in source_filenames:
+        try:
+            ast = AST_class.create(filename, **kwargs)
+        except ASTGenerationException:
+            print(f"{filename} cannot be properly parsed")
+            continue
 
-        asts = {}
-        for dirname in os.listdir(dir):
-            path = os.path.join(dir, dirname, subpath)
-            if not os.path.exists(path):
-                warnings.append(f"{os.path.join(dir, dirname)} doesn't have {subpath}")
-                continue
+        ast.hash()
+        asts[filename] = ast
 
-            try:
-                ast = AST_class.create(path, **kwargs)
-            except ASTGenerationException:
-                print(f"{path} cannot be properly parsed")
-                continue
+    # # Find Sub ASTs based on checkpoints
+    # checkpoint_to_asts = {}
+    # if len(checkpoint.identifiers) == 0: # Checks the whole file
+    #     checkpoint_to_asts[(subpath, '*', '*')] = asts
+    # else:                                # Checks partial code
+    #     for name, kind in checkpoint.identifiers:
+    #         # Extract Sub-AST for this specific name and kind
+    #         local_asts = {}
+    #         for path in asts:
+    #             try:
+    #                 local_asts[path] = asts[path].subtree(kind, name)
+    #             except ASTSearchException:
+    #                 warnings.append(f"{path} doesn't have {name}:{kind}")
 
-            ast.hash()
-            asts[path] = ast
+    #         checkpoint_to_asts[(subpath, name, kind)] = local_asts
 
-        # Find Sub ASTs based on checkpoints
-        checkpoint_to_asts = {}
-        if len(checkpoint.identifiers) == 0: # Checks the whole file
-            checkpoint_to_asts[(subpath, '*', '*')] = asts
-        else:                                # Checks partial code
-            for name, kind in checkpoint.identifiers:
-                # Extract Sub-AST for this specific name and kind
-                local_asts = {}
-                for path in asts:
-                    try:
-                        local_asts[path] = asts[path].subtree(kind, name)
-                    except ASTSearchException:
-                        warnings.append(f"{path} doesn't have {name}:{kind}")
+    # Run matching algorithm
+    checkers = []
+    keys = list(asts.keys())
+    for i in range(len(keys)):
+        for j in range(i + 1, len(keys)):
+            path1 = keys[i]
+            path2 = keys[j]
+            checker = Checker(
+                path1,
+                path2,
+                asts[path1].preorder(),
+                asts[path2].preorder(),
+                threshold=threshold,
+            )
 
-                checkpoint_to_asts[(subpath, name, kind)] = local_asts
+            checker.check()
+            checkers.append(checker)
 
-        # Run matching algorithm
-        path_name_kind_result = []
-        one_file["path_name_kind_result"] = path_name_kind_result
-        for (subpath, name, kind) in checkpoint_to_asts:
-            one_result = {}
-            path_name_kind_result.append(one_result)
-            one_result["name"] = name
-            one_result["kind"] = kind
-            local_asts = checkpoint_to_asts[(subpath, name, kind)]
-
-            checkers = []
-            keys = list(local_asts.keys())
-            for i in range(len(keys)):
-                for j in range(i + 1, len(keys)):
-                    path1 = keys[i]
-                    path2 = keys[j]
-                    checker = Checker(
-                        path1,
-                        path2,
-                        local_asts[path1].preorder(),
-                        local_asts[path2].preorder(),
-                        threshold=threshold,
-                    )
-
-                    checker.check()
-                    checkers.append(checker)
-
-            # Print result
-            similarity_scores = []
-            one_result["entries"] = similarity_scores
-            for c in checkers:
-                similarity_scores.append({
-                    "submission_A": c.path1,
-                    "submission_B": c.path2,
-                    "similarity": c.similarity
-                })
+    # Print result
+    checker_result = []
+    result["result"] = checker_result
+    for c in checkers:
+        checker_result.append({
+            "submission_A": c.path1,
+            "submission_B": c.path2,
+            "similarity": c.similarity
+        })
 
     # Stop datetime
     end_time = datetime.now()
