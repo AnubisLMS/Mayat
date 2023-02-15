@@ -8,7 +8,14 @@ from mayat.AST import AST, ASTGenerationException, ASTSearchException
 from mayat.Configurator import Configuration, Checkpoint
 
 
-def driver(AST_class: AST, source_filenames: List[str], threshold: int, **kwargs):
+def driver(
+    AST_class: AST,
+    source_filenames: List[str],
+    function_name: str,
+    function_kind: str,
+    threshold: int,
+    **kwargs
+):
     """
     A driver function to run the plagiarism detection algorithm over a set of
     students' code
@@ -33,6 +40,7 @@ def driver(AST_class: AST, source_filenames: List[str], threshold: int, **kwargs
     start_time = datetime.now()
     
     warnings = []
+    result["function"] = function_name
     result["warnings"] = warnings
     
     # Translate all code to ASTs
@@ -47,21 +55,16 @@ def driver(AST_class: AST, source_filenames: List[str], threshold: int, **kwargs
         ast.hash()
         asts[filename] = ast
 
-    # # Find Sub ASTs based on checkpoints
-    # checkpoint_to_asts = {}
-    # if len(checkpoint.identifiers) == 0: # Checks the whole file
-    #     checkpoint_to_asts[(subpath, '*', '*')] = asts
-    # else:                                # Checks partial code
-    #     for name, kind in checkpoint.identifiers:
-    #         # Extract Sub-AST for this specific name and kind
-    #         local_asts = {}
-    #         for path in asts:
-    #             try:
-    #                 local_asts[path] = asts[path].subtree(kind, name)
-    #             except ASTSearchException:
-    #                 warnings.append(f"{path} doesn't have {name}:{kind}")
+    # Find Sub ASTs based on function name and kind
+    if function_name != '*':
+        new_asts = {}
+        for path in asts:
+            try:
+                new_asts[path] = asts[path].subtree(function_kind, function_name)
+            except ASTSearchException:
+                warnings.append(f"{path} doesn't have {function_name}")
 
-    #         checkpoint_to_asts[(subpath, name, kind)] = local_asts
+        ast = new_asts
 
     # Run matching algorithm
     checkers = []

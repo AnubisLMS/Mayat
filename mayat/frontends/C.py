@@ -1,16 +1,14 @@
 import sys
 import clang.cindex
+from typing import List
 
 from mayat.AST import AST
 from mayat.args import arg_parser
 from mayat.driver import driver
-from mayat.Configurator import Configuration
 from mayat.Result import print_result
 
 
-KIND_MAP = {
-    "function": "FUNCTION_DECL"
-}
+C_FUNCTION_KIND = "FUNCTION_DECL"
 
 
 class C_AST(AST):
@@ -48,11 +46,14 @@ arg_parser.add_argument(
 )
 
 
-def main():
-    args = arg_parser.parse_args()
-
-    if args.libclang_path is not None:
-        clang.cindex.Config.set_library_path(args.libclang_path)
+def main(
+    source_filenames: List[str],
+    function_name: str,
+    threshold: int,
+    libclang_path: str=None
+):
+    if libclang_path is not None:
+        clang.cindex.Config.set_library_path(libclang_path)
         index = clang.cindex.Index.create()
     else:
         try:
@@ -63,15 +64,28 @@ def main():
             )
             sys.exit()
 
-    result = driver(
+    return driver(
         C_AST,
-        source_filenames=args.source_filenames,
-        threshold=args.threshold,
+        source_filenames=source_filenames,
+        function_name=function_name,
+        function_kind=C_FUNCTION_KIND,
+        threshold=threshold,
         index=index
     )
 
-    print(result)
-
 
 if __name__ == "__main__":
-    main()
+    args = arg_parser.parse_args()
+
+    result = main(
+        source_filenames=args.source_filenames,
+        function_name=args.function_name,
+        threshold=args.threshold,
+        libclang_path=args.libclang_path
+    )
+
+    print_result(
+        result,
+        format=args.output_format,
+        list_all=args.list_all
+    )
