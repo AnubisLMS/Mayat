@@ -1,14 +1,13 @@
 import ast
+from typing import List
 
 from mayat.AST import AST, ASTGenerationException
 from mayat.args import arg_parser
 from mayat.driver import driver
-from mayat.Configurator import Configuration
+from mayat.Result import print_result
 
 
-KIND_MAP = {
-    "function": "FunctionDef"
-}
+PYTHON3_FUNCTION_KIND = "FunctionDef"
 
 
 class Python_AST(AST):
@@ -53,20 +52,34 @@ class Python_AST(AST):
             return helper(prog)
 
 
-def main():
-    for action in arg_parser._actions:
-        if action.dest == "threshold":
-            action.default = 30
-    args = arg_parser.parse_args()
-
-    config = Configuration(args.config_file, KIND_MAP)
-    driver(
+def main(
+    source_filenames: List[str],
+    function_name: str,
+    threshold: int
+):
+    return driver(
         Python_AST,
-        dir=args.dir,
-        config=config,
-        threshold=args.threshold
+        source_filenames=source_filenames,
+        function_name=function_name,
+        function_kind=PYTHON3_FUNCTION_KIND,
+        threshold=threshold
     )
 
 
 if __name__ == "__main__":
-    main()
+    args = arg_parser.parse_args()
+    for action in arg_parser._actions:
+        if action.dest == "threshold":
+            action.default = 30
+
+    result = main(
+        source_filenames=args.source_filenames,
+        function_name=args.function_name,
+        threshold=args.threshold,
+    )
+
+    print_result(
+        result,
+        format=args.output_format,
+        list_all=args.list_all
+    )

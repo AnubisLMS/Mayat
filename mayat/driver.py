@@ -1,11 +1,8 @@
-import os
-import sys
 from typing import List
 from datetime import datetime
 
 from mayat.Checker import Checker
 from mayat.AST import AST, ASTGenerationException, ASTSearchException
-from mayat.Configurator import Configuration, Checkpoint
 
 
 def driver(
