@@ -7,12 +7,7 @@ arg_parser = argparse.ArgumentParser(
     description="Mayat",
     epilog=textwrap.dedent(
         """
-        Explain:
-            The script will find all code under the path:
-                <DIR>/<any dirname>/<SUBPATH>
-
-            For example, `python3 anubis_pd.py -d /home/homework -p dir1/prog.c` will match:
-                /home/homework/<any dirname>/dir1/prog.c
+        Code similarity checking for specified programming language and files.
         """
     ),
 )

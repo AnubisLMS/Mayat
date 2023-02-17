@@ -6,6 +6,7 @@ class ASTGenerationException(Exception):
 class ASTSearchException(Exception):
     pass
 
+
 # Base class for Abstract Syntax Trees
 class AST:
     def __init__(self, parent=None, name=None, pos=None, kind=None):

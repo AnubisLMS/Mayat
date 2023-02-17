@@ -1,6 +1,6 @@
 # Mayat
 
-**Mayat** is a plagiarism detection tool developed by [Tian(Maxwell) Yang](https://github.com/AlpacaMax). It works by comparing the Abstract Syntax Trees of students' code solutions and generate a similarity score for each pair of students' code.
+**Mayat** is a code similarity detection tool developed by [Tian(Maxwell) Yang](https://github.com/AlpacaMax). It works by comparing the Abstract Syntax Trees of students' code solutions and generate a similarity score for each pair of students' code.
 
 ## Usage
 To use the C frontend you first need to install clang's python bindings:
@@ -9,24 +9,15 @@ To use the C frontend you first need to install clang's python bindings:
 pip install clang
 ```
 
-Let's say we need to check all students' `uniq.c` for homework1. The path for each `uniq.c` has the format `homework1/<netid>/user/uniq.c`. We need to:
+Let's say we need to check all students' `uniq.c` for homework1. The path for each `uniq.c` has the format `homework1/<netid>/user/uniq.c`. All we need to do is run:
+```
+python -m mayat.frontends.C homework1/*/user/uniq.c
+```
 
-1. Create `homework1.yaml` with the following content for checking the entire file:
-   ``` yaml
-   user:
-     uniq.c: '*'
-   ```
-   If you want to only check, for example, the `main` function, you need to instead write:
-   ``` yaml
-   user:
-     uniq.c:
-       - name: main
-         kind: function
-   ```
-2. Execute:
-    ```
-    python3 -m mayat.frontends.C -d homework1 -c homework1.yaml
-    ```
+If we only want to check the `main` function, we can do:
+```
+python -m mayat.frontends.C homework1/*/user/uniq.c -f main
+```
 
    Additionally, we can pass two more optional arguments for `C.py`:
    - `--threshold`: Specify the granularity for the matching algorithm. Default to 5. A smaller value will cause it to check trivial details, which increases the similarity score of two code even though they are not similar. A larger value will cause it to overlook some common cheat tricks such as swapping two function definitions.
@@ -35,7 +26,6 @@ Let's say we need to check all students' `uniq.c` for homework1. The path for ea
 ## Implement a new PL's frontend
 We implement a new programming language's frontend by using classes and functions defined in `mayat`. They are:
 - `mayat.AST.AST`: The base class for Abstract Syntax Tree. For a new PL you should inherit this and implement the `AST.create(path)` class method, which takes the path of a program as a parameter and returns the AST representation of that program.
-- `mayat.Cofigurator.Configuration`: A class that reads from the `yaml` file and outputs the *checkpoints*, which are portions of code you want Mayat to check. You need to instantiate a `Configuration` object with the `yaml` file's filename and a `kind_map`, which is a dictionary that translates the kinds in `yaml` to the actual kinds used in the AST of the language.
 - `mayat.args.arg_parser`: A `argparse.ArgumentParser` object. You need to use this object to retrieve command arguments. You can add new arguments if needed.
 - `mayat.driver.driver`: The driver function that takes the inherited AST class and the parsed arguments as parameters and run the plagiarism detection algorithm.
 

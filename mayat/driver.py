@@ -20,12 +20,13 @@ def driver(
     Arguments:
         AST_class: The AST class of the programming language students' code
                    written in
-        dir: The directory the source code files live in
-        subpath: The path to the file relative to each student's directory
+        source_filenames: The list of filenames to check
+        function_name: The specific function name to check
+        function_kind: The name of the kind for function in the AST we check
         threshold: The granularity of code the algorithm will check
         **kwargs: Additional resources needed
     Return:
-        A Result instance containing the result coming out of the algorithm
+        A dictionary containing the result coming out of the algorithm
     """
 
     result = {}
@@ -63,7 +64,7 @@ def driver(
 
         ast = new_asts
 
-    # Run matching algorithm
+    # Run similarity checking algorithm
     checkers = []
     keys = list(asts.keys())
     for i in range(len(keys)):
@@ -81,7 +82,7 @@ def driver(
             checker.check()
             checkers.append(checker)
 
-    # Print result
+    # Collect result
     checker_result = []
     result["result"] = checker_result
     for c in checkers:

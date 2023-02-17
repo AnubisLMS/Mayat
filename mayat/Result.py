@@ -1,5 +1,6 @@
 import json
 
+
 def print_str(result_dict: dict):
     print(result_dict["current_datetime"])
     print()
@@ -18,6 +19,7 @@ def print_str(result_dict: dict):
     print()
     
     print(f"{result_dict['execution_time']}s")
+
 
 def print_result(result_dict, format, list_all):
     if not list_all:
