@@ -1,41 +1,31 @@
 import json
 
-def print_str(result_dict):
+
+def print_str(result_dict: dict):
     print(result_dict["current_datetime"])
-    print(result_dict["command"])
     print()
 
-    print("Things to check:")
-    for cp in result_dict["checkpoints"]:
-        print(f"{cp['path']}: {' | '.join([f'{id[1]} {id[0]}' for id in cp['identifiers']])}")
+    print(f"Checking function: {result_dict['function']}")
+    print()
 
-    for result in result_dict["checkpoint_results"]:
-        print()
-        print()
-        print(result["subpath"])
-        print()
-
-        for warning in result["warnings"]:
-            print(warning)
-        print()
+    print("Warnings:")
+    for warning in result_dict["warnings"]:
+        print(warning)
+    print()
         
-        for pnk_result in result["path_name_kind_result"]:
-            print(f"Results for {result['subpath']}: {pnk_result['name']}:{pnk_result['kind']}")
-            print()
-
-            for entry in sorted(pnk_result["entries"], key=lambda x: x["similarity"], reverse=True):
-                print(f"{entry['submission_A']} - {entry['submission_B']}:\t{entry['similarity']:%}")
-            print()
+    print(f"Checker result:")
+    for entry in sorted(result_dict["result"], key=lambda x: x["similarity"], reverse=True):
+        print(f"{entry['submission_A']} - {entry['submission_B']}:\t{entry['similarity']:%}")
+    print()
     
     print(f"{result_dict['execution_time']}s")
 
+
 def print_result(result_dict, format, list_all):
     if not list_all:
-        for result in result_dict["checkpoint_results"]:
-            for pnk_result in result["path_name_kind_result"]:
-                pnk_result["entries"] = list(
-                    filter(lambda x: x["similarity"] > 0, pnk_result["entries"])
-                )
+        result_dict["result"] = list(
+            filter(lambda x: x["similarity"] > 0, result_dict["result"])
+        )
 
     if format == "JSON":
         print(json.dumps(result_dict, indent=4))
