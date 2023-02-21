@@ -1,6 +1,6 @@
 .idea
 .vscode
-anubis*.egg-info
+*.egg-info
 venv
 build
 dist
