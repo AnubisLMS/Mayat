@@ -1,5 +1,5 @@
 clang
+tree_sitter
 pytest
 black
 coverage
-
