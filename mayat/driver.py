@@ -36,16 +36,17 @@ def driver(
 
     # Start datetime
     start_time = datetime.now()
-    
+
     warnings = []
     result["function"] = function_name
     result["warnings"] = warnings
-    
+
     # Translate all code to ASTs
     asts = {}
     for filename in source_filenames:
         try:
             ast = AST_class.create(filename, **kwargs)
+            print(type(ast))
         except ASTGenerationException:
             print(f"{filename} cannot be properly parsed")
             continue
