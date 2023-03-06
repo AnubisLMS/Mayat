@@ -10,11 +10,19 @@ from mayat.Result import print_result
 
 
 LANG_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(mayat.__file__)),
-    "langs/langs.so"
+    os.path.dirname(mayat.__file__),
+    "langs.so"
 )
 JAVA_LANG = Language(LANG_PATH, 'java')
 JAVA_METHOD_KIND = "method_declaration"
+JAVA_IDENTIFIER_KIND = "identifier"
+JAVA_BLOCK_COMMENT_KIND = "block_comment"
+JAVA_INLINE_COMMENT_KIND = "line_comment"
+
+JAVA_IGNORE_KINDS = {
+    JAVA_BLOCK_COMMENT_KIND,
+    JAVA_INLINE_COMMENT_KIND
+}
 
 
 class Java_AST(AST):
@@ -23,9 +31,9 @@ class Java_AST(AST):
 
     @classmethod
     def create(cls, path):
-        def helper(cursor):
+        def helper(cursor, parent=None):
             java_ast_node = Java_AST(
-                parent=cursor.node.parent,
+                parent=parent,
                 name=cursor.node.text,
                 pos=cursor.node.start_point,
                 kind=cursor.node.type
@@ -33,7 +41,7 @@ class Java_AST(AST):
 
             if cursor.node.type == JAVA_METHOD_KIND:
                 for node in cursor.node.children:
-                    if node.type == "identifier":
+                    if node.type == JAVA_IDENTIFIER_KIND:
                         java_ast_node.name = node.text
                         break
 
@@ -44,7 +52,11 @@ class Java_AST(AST):
                 return java_ast_node
 
             while has_more_children:
-                child_node = helper(cursor)
+                if cursor.node.type in JAVA_IGNORE_KINDS:
+                    has_more_children = cursor.goto_next_sibling()
+                    continue
+
+                child_node = helper(cursor, java_ast_node)
                 java_ast_node.children.append(child_node)
                 java_ast_node.weight += child_node.weight
 
@@ -77,19 +89,19 @@ def main(
 
 
 if __name__ == "__main__":
-    # args = arg_parser.parse_args()
+    args = arg_parser.parse_args()
 
-    # result = main(
-    #     source_filenames=args.source_filenames,
-    #     function_name=args.function_name,
-    #     threshold=args.threshold,
-    # )
+    result = main(
+        source_filenames=args.source_filenames,
+        function_name=args.function_name,
+        threshold=args.threshold,
+    )
 
-    # print_result(
-    #     result,
-    #     format=args.output_format,
-    #     list_all=args.list_all
-    # )
+    print_result(
+        result,
+        format=args.output_format,
+        list_all=args.list_all
+    )
 
-    java_ast_node = Java_AST.create("/Users/alpacamax/Documents/Notes/AntiCheat_Tests/BigCloneEval/ijadataset/bcb_reduced/9/selected/770659.java")
-    java_ast_node.display()
+    # java_ast_node = Java_AST.create("/Users/alpacamax/Documents/Notes/AntiCheat_Tests/BigCloneEval/ijadataset/bcb_reduced/2/selected/864.java")
+    # java_ast_node.display()

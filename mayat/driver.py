@@ -46,7 +46,6 @@ def driver(
     for filename in source_filenames:
         try:
             ast = AST_class.create(filename, **kwargs)
-            print(type(ast))
         except ASTGenerationException:
             print(f"{filename} cannot be properly parsed")
             continue
