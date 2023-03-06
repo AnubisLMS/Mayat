@@ -36,11 +36,11 @@ def driver(
 
     # Start datetime
     start_time = datetime.now()
-    
+
     warnings = []
     result["function"] = function_name
     result["warnings"] = warnings
-    
+
     # Translate all code to ASTs
     asts = {}
     for filename in source_filenames:
