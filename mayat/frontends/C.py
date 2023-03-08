@@ -100,6 +100,3 @@ if __name__ == "__main__":
         format=args.output_format,
         list_all=args.list_all
     )
-
-    # c_ast_node = C_AST.create("/Users/alpacamax/Documents/Notes/AntiCheat_Tests/f22_homework1/aa7831/user/sort.c")
-    # c_ast_node.display()
