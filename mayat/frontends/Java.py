@@ -3,7 +3,7 @@ from tree_sitter import Language, Parser
 from typing import List
 
 import mayat
-from mayat.AST import AST, ASTGenerationException
+from mayat.AST import AST
 from mayat.args import arg_parser
 from mayat.driver import driver
 from mayat.Result import print_result
@@ -102,6 +102,4 @@ if __name__ == "__main__":
         format=args.output_format,
         list_all=args.list_all
     )
-
-    # java_ast_node = Java_AST.create("/Users/alpacamax/Documents/Notes/AntiCheat_Tests/BigCloneEval/ijadataset/bcb_reduced/2/selected/864.java")
-    # java_ast_node.display()
+)
