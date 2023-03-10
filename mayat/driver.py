@@ -54,7 +54,8 @@ def driver(
         asts[filename] = ast
 
     # Find Sub ASTs based on function name and kind
-    if function_name != '*':
+    function_name = function_name.encode()
+    if function_name != b'*':
         new_asts = {}
         for path in asts:
             try:
