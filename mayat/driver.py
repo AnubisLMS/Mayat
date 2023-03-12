@@ -54,15 +54,17 @@ def driver(
         asts[filename] = ast
 
     # Find Sub ASTs based on function name and kind
-    if function_name != '*':
+    function_name = function_name.encode()
+    if function_name != b'*':
         new_asts = {}
         for path in asts:
             try:
-                new_asts[path] = asts[path].subtree(function_kind, function_name)
+                sub_ast = asts[path].subtree(function_kind, function_name)
+                new_asts[path] = sub_ast
             except ASTSearchException:
                 warnings.append(f"{path} doesn't have {function_name}")
 
-        ast = new_asts
+        asts = new_asts
 
     # Run similarity checking algorithm
     checkers = []
