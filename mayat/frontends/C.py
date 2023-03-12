@@ -14,7 +14,8 @@ LANG_PATH = os.path.join(
     "langs.so"
 )
 C_LANG = Language(LANG_PATH, 'c')
-C_FUNCTION_KIND = "function_declarator"
+C_FUNCTION_KIND = "function_definition"
+C_FUNCTION_DECLARATION_KIND = "function_declarator"
 C_IDENTIFIER_KIND = "identifier"
 C_INLINE_COMMENT = "comment"
 
@@ -39,9 +40,10 @@ class C_AST(AST):
 
             if cursor.node.type == C_FUNCTION_KIND:
                 for node in cursor.node.children:
-                    if node.type == C_IDENTIFIER_KIND:
-                        c_ast_node.name = node.text
-                        break
+                    if node.type == C_FUNCTION_DECLARATION_KIND:
+                        for sub_node in node.children:
+                            if sub_node.type == C_IDENTIFIER_KIND:
+                                c_ast_node.name = sub_node.text
 
             c_ast_node.weight = 1
 
