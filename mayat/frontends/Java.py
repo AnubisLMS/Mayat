@@ -26,15 +26,18 @@ JAVA_IGNORE_KINDS = {
 
 
 class Java_AST(AST):
-    def __init__(self, parent=None, name=None, pos=None, kind=None):
-        AST.__init__(self, parent, name, pos, kind)
+    def __init__(self, parent=None, name=None, text=None, start_pos=None, end_pos=None, kind=None):
+        AST.__init__(self, parent, name, text, start_pos, end_pos, kind)
 
     @classmethod
     def create(cls, path):
         def helper(cursor, parent=None):
             java_ast_node = Java_AST(
                 parent=parent,
-                name=cursor.node.text,
+                name="",
+                text=cursor.node.text,
+                start_pos=cursor.node.start_point,
+                end_pos=cursor.node.end_point,
                 pos=cursor.node.start_point,
                 kind=cursor.node.type
             )
