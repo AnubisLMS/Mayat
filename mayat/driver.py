@@ -91,7 +91,8 @@ def driver(
         checker_result.append({
             "submission_A": c.path1,
             "submission_B": c.path2,
-            "similarity": c.similarity
+            "similarity": c.similarity,
+            "overlapping_ranges": c.overlapping_ranges,
         })
 
     # Stop datetime
