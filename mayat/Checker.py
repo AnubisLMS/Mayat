@@ -50,11 +50,11 @@ class Checker:
             if key in overlaps_in_arrLL2:
                 num_of_same_nodes += node.weight
                 node_in_arrLL2 = next(overlaps_in_arrLL2[key][0])
-                self.overlapping_ranges.append((
-                    node.start_pos,
-                    node.end_pos,
-                    node_in_arrLL2.start_pos,
-                    node_in_arrLL2.end_pos
-                ))
+                self.overlapping_ranges.append({
+                    "A_start_pos": node.start_pos,
+                    "A_end_pos": node.end_pos,
+                    "B_start_pos": node_in_arrLL2.start_pos,
+                    "B_end_pos": node_in_arrLL2.end_pos
+                })
 
         self.similarity = num_of_same_nodes / min(len(self.arrLL1), len(self.arrLL2))
