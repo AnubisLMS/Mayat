@@ -24,7 +24,7 @@
         <div>
             {% for entry in data["result"] %}
                 <div>
-                    <a href={{ url_for("result", submission_A=b64(entry['submission_A'].encode()), submission_B=b64(entry['submission_B'].encode())) }}>
+                    <a href={{ "/{}".format(loop.index) }}>
                         <code><b>{{ "{:.2%}".format(entry["similarity"]) }}</b>: {{ entry["submission_A"] }} - {{ entry["submission_B"] }}</code>
                     </a>
                 </div>
