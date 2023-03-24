@@ -7,6 +7,48 @@ app = Flask(__name__)
 app.jinja_env.globals.update(b64=base64.urlsafe_b64encode)
 data = None
 
+def extract_ranges(overlapping_ranges, is_A):
+    if is_A:
+        return [{"start_pos": r["A_start_pos"], "end_pos": r["A_end_pos"]} for r in overlapping_ranges]
+    else:
+        return [{"start_pos": r["B_start_pos"], "end_pos": r["B_end_pos"]} for r in overlapping_ranges]
+
+def code_to_highlighted_html(code, ranges):
+    ranges.sort(key=lambda x: x["start_pos"][0])
+    in_range = False
+    range_i = 0
+    ln = 0
+    col = 0
+
+    html = ""
+
+    for c in code:
+        # print((ln, col), in_range, range_i)
+        if not in_range:
+            if range_i < len(ranges) and (ln, col) == tuple(ranges[range_i]["start_pos"]):
+                html += "<span style='background-color: red; color: white'>"
+                in_range = True
+        else:
+            if (ln, col) == tuple(ranges[range_i]["end_pos"]):
+                html += "</span>"
+                in_range = False
+                range_i += 1
+
+                if range_i < len(ranges) and (ln, col) == tuple(ranges[range_i]["start_pos"]):
+                    html += "<span style='background-color: red; color: white'>"
+                    in_range = True
+        
+        html += c
+        if c == '\n':
+            ln += 1
+            col = 0
+        else:
+            col += 1
+
+    html += ""
+
+    return html
+
 @app.route("/")
 def main():
     return render_template("main.html", data=data)
@@ -23,8 +65,14 @@ def result(index):
     return render_template(
         "result.html",
         entry=entry,
-        submission_A_code=submission_A_code,
-        submission_B_code=submission_B_code,
+        submission_A_code=code_to_highlighted_html(
+            submission_A_code,
+            extract_ranges(entry["overlapping_ranges"], True)
+        ),
+        submission_B_code=code_to_highlighted_html(
+            submission_B_code,
+            extract_ranges(entry["overlapping_ranges"], False)
+        ),
         prev=f"/{index - 1 if index > 1 else index}",
         next=f"/{index + 1 if index < len(data['result']) else index}"
     )
