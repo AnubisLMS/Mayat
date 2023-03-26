@@ -14,7 +14,7 @@ def extract_ranges(overlapping_ranges, is_A):
         return [{"start_pos": r["B_start_pos"], "end_pos": r["B_end_pos"]} for r in overlapping_ranges]
 
 def code_to_highlighted_html(code, ranges):
-    ranges.sort(key=lambda x: x["start_pos"][0])
+    ranges.sort(key=lambda x: tuple(x["start_pos"]))
     in_range = False
     range_i = 0
     ln = 0
@@ -23,20 +23,26 @@ def code_to_highlighted_html(code, ranges):
     html = ""
 
     for c in code:
-        # print((ln, col), in_range, range_i)
         if not in_range:
             if range_i < len(ranges) and (ln, col) == tuple(ranges[range_i]["start_pos"]):
                 html += "<span style='background-color: red; color: white'>"
                 in_range = True
+                # print((ln, col), range_i, in_range)
         else:
             if (ln, col) == tuple(ranges[range_i]["end_pos"]):
                 html += "</span>"
                 in_range = False
                 range_i += 1
+                # print((ln, col), range_i, in_range)
+
+                # TODO: Need to figure out why subtrees of a subtree would be included in overlapping ranges
+                while (range_i < len(ranges) and tuple(ranges[range_i]["start_pos"]) < (ln, col)):
+                    range_i += 1
 
                 if range_i < len(ranges) and (ln, col) == tuple(ranges[range_i]["start_pos"]):
                     html += "<span style='background-color: red; color: white'>"
                     in_range = True
+                    # print((ln, col), range_i, in_range)
         
         html += c
         if c == '\n':
