@@ -9,10 +9,12 @@ class ASTSearchException(Exception):
 
 # Base class for Abstract Syntax Trees
 class AST:
-    def __init__(self, parent=None, name=None, pos=None, kind=None):
+    def __init__(self, parent=None, name=None, text=None, start_pos=None, end_pos=None, kind=None):
         self.parent = parent
         self.name = name
-        self.pos = pos
+        self.text = text
+        self.start_pos = start_pos
+        self.end_pos = end_pos
         self.kind = kind
         self.children = []
         self.fingerprint = None
@@ -44,7 +46,7 @@ class AST:
             child.display(level + 1)
 
     def __str__(self):
-        return f"<{self.name}, {self.pos}, {self.kind}, {self.weight}>"
+        return f"<{self.name}, {self.start_pos}-{self.end_pos}, {self.kind}, {self.weight}>"
 
     def __repr__(self):
         return str(self)

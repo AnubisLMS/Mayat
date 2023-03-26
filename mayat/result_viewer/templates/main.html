@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mayat Result Viewer</title>
+</head>
+<body>
+    <div>
+        <h1>Mayat Result Viewer</h1>
+    </div>
+    <div>
+        <div><b>current_datetime</b>:<code> {{ data["current_datetime"] }}</code></div>
+        <div><b>function</b>:<code> {{ data["function"] }}</code></div>
+        <div><b>warnings:</b></div>
+        {% for warning in data["warnings"] %}
+            <div><code>{{ warning }}</code></div>
+        {% endfor %}
+        <div><b>execution_time</b>:<code> {{ data["execution_time"] }}s</code></div>
+    </div>
+    <div>
+        <h2>Result:</h2>
+        <div>
+            {% for entry in data["result"] %}
+                <div>
+                    <a href={{ "/{}".format(loop.index) }}>
+                        <code><b>{{ "{:.2%}".format(entry["similarity"]) }}</b>: {{ entry["submission_A"] }} - {{ entry["submission_B"] }}</code>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

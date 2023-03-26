@@ -1,3 +1,4 @@
+import os
 from typing import List
 from datetime import datetime
 
@@ -51,7 +52,7 @@ def driver(
             continue
 
         ast.hash()
-        asts[filename] = ast
+        asts[os.path.abspath(filename)] = ast
 
     # Find Sub ASTs based on function name and kind
     function_name = function_name.encode()
@@ -91,7 +92,8 @@ def driver(
         checker_result.append({
             "submission_A": c.path1,
             "submission_B": c.path2,
-            "similarity": c.similarity
+            "similarity": c.similarity,
+            "overlapping_ranges": c.overlapping_ranges,
         })
 
     # Stop datetime
