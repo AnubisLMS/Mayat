@@ -1,6 +1,8 @@
 import os
+import sys
 from typing import List
 from datetime import datetime
+from tqdm import tqdm
 
 from mayat.Checker import Checker
 from mayat.AST import AST, ASTGenerationException, ASTSearchException
@@ -43,8 +45,9 @@ def driver(
     result["warnings"] = warnings
 
     # Translate all code to ASTs
+    print("Parsing files...", file=sys.stderr)
     asts = {}
-    for filename in source_filenames:
+    for filename in tqdm(source_filenames):
         try:
             ast = AST_class.create(filename, **kwargs)
         except ASTGenerationException:
@@ -57,8 +60,9 @@ def driver(
     # Find Sub ASTs based on function name and kind
     function_name = function_name.encode()
     if function_name != b'*':
+        print("Filtering partial code...", file=sys.stderr)
         new_asts = {}
-        for path in asts:
+        for path in tqdm(asts):
             try:
                 sub_ast = asts[path].subtree(function_kind, function_name)
                 new_asts[path] = sub_ast
@@ -70,20 +74,24 @@ def driver(
     # Run similarity checking algorithm
     checkers = []
     keys = list(asts.keys())
-    for i in range(len(keys)):
-        for j in range(i + 1, len(keys)):
-            path1 = keys[i]
-            path2 = keys[j]
-            checker = Checker(
-                path1,
-                path2,
-                asts[path1].preorder(),
-                asts[path2].preorder(),
-                threshold=threshold,
-            )
 
-            checker.check()
-            checkers.append(checker)
+    print("Running plagiarism detection algorithm...", file=sys.stderr)
+    with tqdm(total=(1 + len(keys) - 1)*(len(keys)-1)//2) as pbar:
+        for i in range(len(keys)):
+            for j in range(i + 1, len(keys)):
+                path1 = keys[i]
+                path2 = keys[j]
+                checker = Checker(
+                    path1,
+                    path2,
+                    asts[path1].preorder(),
+                    asts[path2].preorder(),
+                    threshold=threshold,
+                )
+
+                checker.check()
+                checkers.append(checker)
+                pbar.update(1)
 
     # Collect result
     checker_result = []

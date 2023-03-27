@@ -3,3 +3,4 @@ tree_sitter
 pytest
 black
 coverage
+tqdm
