@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+    .container {
+        display: flex;
+    }
+    .item {
+        flex: 1;
+        margin: 0 1em 0 1em;
+    }
+    .source-code {
+        background-color: #f1f1f1;
+    }
+    pre {
+        white-space: pre-wrap;
+    }
+    </style>
+    <title>Mayat Result Viewer</title>
+</head>
+<body>
+    <div><a href={{ url_for("main") }}><< main</a></div>
+    <div><a href={{ prev }}><< prev</a> <a href={{ next }}>next >></a></div>
+    <h2><code>{{ "{:.2%}".format(entry["similarity"]) }}</code></h2>
+    
+    <div class="container">
+        <div class="item">
+            <code><b>{{ entry["submission_A"] }}</b></code>
+            <pre class="source-code"><code id="sub_A">{{ submission_A_code | safe }}</code></pre>
+        </div>
+        <div class="item">
+            <code><b>{{ entry["submission_B"] }}</b></code>
+            <pre class="source-code"><code id="sub_B">{{ submission_B_code | safe }}</code></pre>
+        </div>
+    </div>
+</body>
+</html>
