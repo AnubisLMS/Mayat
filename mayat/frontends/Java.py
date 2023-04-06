@@ -38,7 +38,6 @@ class Java_AST(AST):
                 text=cursor.node.text,
                 start_pos=cursor.node.start_point,
                 end_pos=cursor.node.end_point,
-                pos=cursor.node.start_point,
                 kind=cursor.node.type
             )
 

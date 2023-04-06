@@ -54,7 +54,7 @@ def driver(
             print(f"{filename} cannot be properly parsed")
             continue
 
-        ast.hash()
+        ast.hash_non_recursive()
         asts[os.path.abspath(filename)] = ast
 
     # Find Sub ASTs based on function name and kind
