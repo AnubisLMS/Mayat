@@ -33,6 +33,25 @@ class AST:
         ).hexdigest()
 
         return self.fingerprint
+    
+    def hash_non_recursive(self):
+        """
+        Equivalent to hash() but non-recursive
+        """
+        stack = [(self, iter(self.children))]
+
+        while len(stack) > 0:
+            (curr_node, curr_node_children_iter) = stack[-1]
+
+            try:
+                child_node = next(curr_node_children_iter)
+                stack.append((child_node, iter(child_node.children)))
+            except StopIteration:
+                child_fingerprints = "".join(c.fingerprint for c in curr_node.children)
+                curr_node.fingerprint = sha256(
+                    (curr_node.kind + child_fingerprints).encode()
+                ).hexdigest()
+                stack.pop()
 
     def display(self, level=0):
         """
