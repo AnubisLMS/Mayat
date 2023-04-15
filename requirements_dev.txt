@@ -4,3 +4,4 @@ pytest
 black
 coverage
 tqdm
+flask
