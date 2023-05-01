@@ -25,7 +25,7 @@ class Python_AST(AST):
             
             pos = None
             if hasattr(node, 'lineno') and hasattr(node, 'col_offset'):
-                (node.lineno, node.col_offset)
+                pos = (node.lineno, node.col_offset)
 
             python_ast_node = Python_AST(
                 parent=parent,
