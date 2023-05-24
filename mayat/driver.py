@@ -84,12 +84,12 @@ def driver(
                 checker = Checker(
                     path1,
                     path2,
-                    asts[path1].preorder(),
-                    asts[path2].preorder(),
+                    asts[path1],
+                    asts[path2],
                     threshold=threshold,
                 )
 
-                checker.check()
+                checker.check_v2()
                 checkers.append(checker)
                 pbar.update(1)
 
