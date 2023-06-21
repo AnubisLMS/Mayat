@@ -6,7 +6,7 @@ import mayat
 from mayat.AST import AST
 from mayat.args import arg_parser
 from mayat.driver import driver
-from mayat.Result import print_result
+from mayat.Result import serialize_result
 
 
 LANG_PATH = os.path.join(
@@ -36,7 +36,6 @@ class Python_AST(AST):
                 text=cursor.node.text,
                 start_pos=cursor.node.start_point,
                 end_pos=cursor.node.end_point,
-                pos=cursor.node.start_point,
                 kind=cursor.node.type
             )
 
@@ -98,8 +97,8 @@ if __name__ == "__main__":
         threshold=args.threshold,
     )
 
-    print_result(
+    print(serialize_result(
         result,
         format=args.output_format,
         list_all=args.list_all
-    )
+    ))

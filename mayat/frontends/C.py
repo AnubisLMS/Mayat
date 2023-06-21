@@ -4,7 +4,7 @@ from typing import List
 from mayat.AST import AST
 from mayat.args import arg_parser
 from mayat.driver import driver
-from mayat.Result import print_result
+from mayat.Result import serialize_result
 
 
 C_FUNCTION_KIND = "FUNCTION_DECL"
@@ -86,24 +86,8 @@ if __name__ == "__main__":
         libclang_path=args.libclang_path
     )
 
-    print_result(
+    print(serialize_result(
         result,
         format=args.output_format,
         list_all=args.list_all
-    )
-
-    # libclang_path = "/Library/Developer/CommandLineTools/usr/lib"
-
-    # if libclang_path is not None:
-    #     clang.cindex.Config.set_library_path(libclang_path)
-    #     index = clang.cindex.Index.create()
-    # else:
-    #     try:
-    #         index = clang.cindex.Index.create()
-    #     except clang.cindex.LibclangError:
-    #         print(
-    #             "Cannot find libclang. Please specify its path using --libclang argument"
-    #         )
-    #         sys.exit()
-    
-    # raw_ast = index.parse("/Users/alpacamax/Documents/Notes/AntiCheat_Tests/f22_homework1/aa7831/user/sort.c")
+    ))

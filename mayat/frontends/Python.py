@@ -4,7 +4,7 @@ from typing import List
 from mayat.AST import AST, ASTGenerationException
 from mayat.args import arg_parser
 from mayat.driver import driver
-from mayat.Result import print_result
+from mayat.Result import serialize_result
 
 
 PYTHON3_FUNCTION_KIND = "FunctionDef"
@@ -80,8 +80,8 @@ if __name__ == "__main__":
         threshold=args.threshold,
     )
 
-    print_result(
+    print(serialize_result(
         result,
         format=args.output_format,
         list_all=args.list_all
-    )
+    ))
