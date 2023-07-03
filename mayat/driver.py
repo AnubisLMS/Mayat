@@ -51,7 +51,10 @@ def driver(
         try:
             ast = AST_class.create(filename, **kwargs)
         except ASTGenerationException:
-            print(f"{filename} cannot be properly parsed")
+            warnings.append(f"{filename} cannot be properly parsed")
+            continue
+        except FileNotFoundError:
+            warnings.append(f"{filename} not found")
             continue
 
         ast.hash_non_recursive()
