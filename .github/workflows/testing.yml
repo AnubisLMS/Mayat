@@ -16,7 +16,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements_dev.txt
       - name: Install Mayat
-        run: /
+        run: |
           git submodule update --init --recursive
           python build_langs.py
           python setup.py develop
