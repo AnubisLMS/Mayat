@@ -1,0 +1,26 @@
+name: Test
+on: [push, pull_request]
+
+jobs:
+  api-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo to the node
+        uses: actions/checkout@v2
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.11"
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements_dev.txt
+      - name: Install Mayat
+        run: /
+          git submodule update --init --recursive
+          python build_langs.py
+          python setup.py develop
+      - name: Run tests
+        run: |
+          cd tests
+          python test.py -v
