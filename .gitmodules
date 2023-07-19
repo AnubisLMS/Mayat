@@ -3,7 +3,7 @@
 	url = https://github.com/tree-sitter/tree-sitter-python
 [submodule "langs/tree-sitter-c"]
 	path = langs/tree-sitter-c
-	url = https://github.com/tree-sitter/tree-sitter-python
+	url = https://github.com/tree-sitter/tree-sitter-c
 [submodule "langs/tree-sitter-java"]
 	path = langs/tree-sitter-java
-	url = https://github.com/tree-sitter/tree-sitter-python
+	url = https://github.com/tree-sitter/tree-sitter-java
