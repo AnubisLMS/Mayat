@@ -31,5 +31,12 @@ We implement a new programming language's frontend by using classes and function
 
 An example of this can be find in `mayat/frontends/C.py`, which is a C frontend for this tool.
 
+## Testing
+To run the test suite, simply `cd` into `tests` directory and run `test.py`
+```
+cd tests
+python test.py -v
+```
+
 ## Limitations
 This tool will never work for assembly code as the code has to be written in a high level programming language that can be converted into an AST. We can potentially figure out a way to automatically reverse engineer assembly code back to C and then convert it to AST. However, there's no guarantee that the reverse-engineered code can be a good representation for its assembly counterpart.
