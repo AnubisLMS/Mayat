@@ -1,4 +1,4 @@
 clang
 tree_sitter
 tqdm
-git
+GitPython

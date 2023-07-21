@@ -22,3 +22,4 @@ Language.build_library(
         "my_langs/tree-sitter-java",
     ]
 )
+
