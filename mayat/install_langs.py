@@ -1,25 +1,31 @@
+import os
 import git
+import shutil
 from tree_sitter import Language
 
-git.Repo.clone_from(
-    "git@github.com:tree-sitter/tree-sitter-python.git",
-    "my_langs/tree-sitter-python"
-)
-git.Repo.clone_from(
-    "git@github.com:tree-sitter/tree-sitter-c.git",
-    "my_langs/tree-sitter-c"
-)
-git.Repo.clone_from(
-    "git@github.com:tree-sitter/tree-sitter-java.git",
-    "my_langs/tree-sitter-java"
-)
+import mayat
 
+MAYAT_DIR = os.path.dirname(mayat.__file__)
+LANGS = [
+    "tree-sitter-c",
+    "tree-sitter-java",
+    "tree-sitter-python",
+]
+
+for lang in LANGS:
+    if os.path.exists(os.path.join(MAYAT_DIR, "langs", lang)):
+        continue
+
+    print(f"Downloading {lang}")
+    git.Repo.clone_from(
+        f"git@github.com:tree-sitter/{lang}.git",
+        os.path.join(MAYAT_DIR, "langs", lang)
+    )
+
+print("Building lang.so")
 Language.build_library(
-    "my_langs.so",
-    [
-        "my_langs/tree-sitter-c",
-        "my_langs/tree-sitter-python",
-        "my_langs/tree-sitter-java",
-    ]
+    os.path.join(MAYAT_DIR, "langs.so"),
+    [os.path.join(MAYAT_DIR, "langs", lang) for lang in LANGS]
 )
 
+shutil.rmtree(os.path.join(MAYAT_DIR, "langs"))
