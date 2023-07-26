@@ -13,6 +13,10 @@ LANG_PATH = os.path.join(
     os.path.dirname(mayat.__file__),
     "langs.so"
 )
+
+if not os.path.exists(LANG_PATH):
+    raise Exception("Run mayat.install_langs to install tree-sitter parsers!")
+
 JAVA_LANG = Language(LANG_PATH, 'java')
 JAVA_METHOD_KIND = "method_declaration"
 JAVA_IDENTIFIER_KIND = "identifier"

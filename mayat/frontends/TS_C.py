@@ -13,6 +13,10 @@ LANG_PATH = os.path.join(
     os.path.dirname(mayat.__file__),
     "langs.so"
 )
+
+if not os.path.exists(LANG_PATH):
+    raise Exception("Run mayat.install_langs to install tree-sitter parsers!")
+
 C_LANG = Language(LANG_PATH, 'c')
 C_FUNCTION_KIND = "function_definition"
 C_FUNCTION_DECLARATION_KIND = "function_declarator"
