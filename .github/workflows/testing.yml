@@ -5,8 +5,26 @@ jobs:
   api-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the repo to the node
-        uses: actions/checkout@v2
+      - name: Checkout Mayat
+        uses: actions/checkout@v3
+      - name: Clone tree-sitter-c
+        uses: actions/checkout@v3
+        with: 
+          repository: tree-sitter/tree-sitter-c.git
+          ref: master
+          path: mayat/langs/tree-sitter-c
+      - name: Clone tree-sitter-java
+        uses: actions/checkout@v3
+        with: 
+          repository: tree-sitter/tree-sitter-java.git
+          ref: master
+          path: mayat/langs/tree-sitter-java
+      - name: Clone tree-sitter-python
+        uses: actions/checkout@v3
+        with:
+          repository: tree-sitter/tree-sitter-python.git
+          ref: master
+          path: mayat/langs/tree-sitter-python
       - name: Set up Python 3.11
         uses: actions/setup-python@v2
         with:
@@ -17,9 +35,8 @@ jobs:
           pip install -r requirements_dev.txt
       - name: Install Mayat
         run: |
-          git submodule update --init --recursive
-          python build_langs.py
           python setup.py develop
+          python -m mayat.install_langs
       - name: Run tests
         run: |
           cd tests

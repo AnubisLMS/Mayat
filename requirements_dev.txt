@@ -5,3 +5,4 @@ black
 coverage
 tqdm
 setuptools
+GitPython
