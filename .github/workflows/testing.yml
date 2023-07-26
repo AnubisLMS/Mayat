@@ -12,19 +12,19 @@ jobs:
         with: 
           repository: tree-sitter/tree-sitter-c.git
           ref: master
-          path: mayat/langs
+          path: mayat/langs/tree-sitter-c
       - name: Clone tree-sitter-java
         uses: actions/checkout@v3
         with: 
           repository: tree-sitter/tree-sitter-java.git
           ref: master
-          path: mayat/langs
+          path: mayat/langs/tree-sitter-java
       - name: Clone tree-sitter-python
         uses: actions/checkout@v3
         with:
           repository: tree-sitter/tree-sitter-python.git
           ref: master
-          path: mayat/langs
+          path: mayat/langs/tree-sitter-python
       - name: Set up Python 3.11
         uses: actions/setup-python@v2
         with:
