@@ -5,4 +5,6 @@ black
 coverage
 tqdm
 setuptools
+build
+twine
 GitPython
