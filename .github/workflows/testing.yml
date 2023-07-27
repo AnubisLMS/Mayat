@@ -35,7 +35,7 @@ jobs:
           pip install -r requirements_dev.txt
       - name: Install Mayat
         run: |
-          python setup.py develop
+          python -m build
           python -m mayat.install_langs
       - name: Run tests
         run: |
